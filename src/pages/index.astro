@@ -5,7 +5,7 @@ import Layout from '../layouts/MainLayout.astro';
 import { tools } from '../data/tools';
 ---
 
-<Layout>
+<Layout pageTitle="Tooliva — Developer Tools, Done Right." pageDescription="Fast, clean developer utilities — JSON formatter, JWT decoder, Base64 encoder, UUID generator, and cron builder.">
   <Nav />
 
   <section class="hero-band">
@@ -14,11 +14,11 @@ import { tools } from '../data/tools';
       <span class="badge-secondary">Tools &middot; Utility &middot; Speed</span>
       <h1 class="hero-title">Developer tools, done right.</h1>
       <p class="hero-subtitle">
-        The tools you Google &mdash; but fast, clean, and ad-free.
+        The tools you Google &mdash; but fast, clean, and instant.
       </p>
       <div class="hero-cta">
-        <button class="btn-primary">Get Started</button>
-        <button class="btn-secondary">Learn More</button>
+        <a href="/tools" class="btn-primary">Get Started</a>
+        <a href="/about" class="btn-secondary">Learn More</a>
       </div>
     </div>
   </section>
@@ -26,11 +26,39 @@ import { tools } from '../data/tools';
   <section class="tools-band">
     <div class="tools-container">
       <h2 class="section-title">Every tool you need.</h2>
-      <p class="section-subtitle">Quick, reliable utilities for developers &mdash; no ads, no fuss.</p>
+      <p class="section-subtitle">Quick, reliable utilities for developers &mdash; no fuss, just speed.</p>
       <div class="tools-grid">
         {tools.map((tool) => (
           <ToolCard name={tool.name} slug={tool.slug} description={tool.description} category={tool.category} />
         ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-band">
+    <div class="faq-container">
+      <h2 class="section-title">Frequently asked questions</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-question">Is Tooliva free?</h3>
+          <p class="faq-answer">Yes, every tool is completely free to use.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">Do I need an account?</h3>
+          <p class="faq-answer">No. Just open a tool and start using it.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">Is my data safe?</h3>
+          <p class="faq-answer">Yes. All tools run in your browser; your data never leaves your device.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">Can I use these tools offline?</h3>
+          <p class="faq-answer">Once a tool page loads, it works without an internet connection.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">Are more tools coming?</h3>
+          <p class="faq-answer">Yes, we add new tools regularly.</p>
+        </div>
       </div>
     </div>
   </section>

@@ -2,12 +2,31 @@
 import '@fontsource-variable/geist';
 import '@fontsource/geist-mono';
 import '../styles/globals.css';
+
+export interface Props {
+  pageTitle?: string;
+  pageDescription?: string;
+}
+
+const {
+  pageTitle = 'Tooliva',
+  pageDescription = 'Fast, clean developer utilities — format JSON, decode JWT, encode Base64, and more.',
+} = Astro.props;
+
+const pageUrl = Astro.url.href;
 ---
 
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />

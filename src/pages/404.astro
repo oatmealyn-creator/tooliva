@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/MainLayout.astro';
+---
+
+<Layout pageTitle="404 — Tooliva" pageDescription="Page not found.">
+  <section class="notfound-band">
+    <div class="notfound-content">
+      <h1 class="notfound-title">404.</h1>
+      <p class="notfound-subtitle">The page you&rsquo;re looking for doesn&rsquo;t exist.</p>
+      <a href="/" class="btn-primary notfound-cta">Go Home</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .notfound-band {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: var(--spacing-4xl) var(--spacing-lg);
+    background-color: var(--color-canvas-soft);
+  }
+  .notfound-content {
+    text-align: center;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+  .notfound-title {
+    font-size: var(--font-size-display-xl);
+    font-weight: var(--font-weight-display-xl);
+    letter-spacing: -2.4px;
+    line-height: 1;
+    color: var(--color-ink);
+    margin: 0;
+  }
+  .notfound-subtitle {
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-body-md);
+    color: var(--color-body);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .notfound-cta {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: var(--spacing-sm);
+  }
+</style>
