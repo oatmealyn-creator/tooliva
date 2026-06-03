@@ -1,0 +1,75 @@
+---
+import Layout from '../layouts/MainLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout>
+  <title slot="head">Contact — Tooliva</title>
+  <meta slot="head" name="description" content="Get in touch with the Tooliva team." />
+
+  <Nav />
+
+  <section class="page-band">
+    <div class="page-container">
+      <h1 class="page-title">Contact.</h1>
+      <p class="page-subtitle">
+        Have feedback or a tool request? We&rsquo;d love to hear from you.
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="page-container content">
+      <p>
+        Send us an email at <a href="mailto:hello@tooliva.com" class="contact-link">hello@tooliva.com</a>
+        &mdash; we read every message.
+      </p>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .page-band {
+    padding: var(--spacing-5xl) var(--spacing-lg) 0;
+  }
+  .page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .page-title {
+    font-size: var(--font-size-display-lg);
+    font-weight: var(--font-weight-display-lg);
+    letter-spacing: -1.28px;
+    color: var(--color-ink);
+    margin: 0;
+    line-height: 1.25;
+  }
+  .page-subtitle {
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-body-md);
+    color: var(--color-body);
+    margin: var(--spacing-sm) 0 0;
+    line-height: 1.5;
+  }
+  .content-band {
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-5xl);
+  }
+  .content p {
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-body-md);
+    color: var(--color-body);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .contact-link {
+    color: var(--color-link);
+    text-decoration: underline;
+    font-weight: 500;
+  }
+  .contact-link:hover {
+    color: var(--color-link-deep);
+  }
+</style>

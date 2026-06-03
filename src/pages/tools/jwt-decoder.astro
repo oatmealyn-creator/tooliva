@@ -1,0 +1,158 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout title="JWT Decoder" description="Decode and inspect JSON Web Tokens.">
+  <textarea id="input" class="input-area" placeholder="Paste your JWT here..." spellcheck="false"></textarea>
+
+  <div class="button-row">
+    <button class="btn-primary" id="btn-decode">Decode</button>
+    <button class="btn-secondary" id="btn-clear">Clear</button>
+  </div>
+
+  <div id="error" class="error-msg" hidden></div>
+
+  <div class="output-section" id="output-section" hidden>
+    <div class="output-block">
+      <span class="output-label">Header</span>
+      <div class="output-area"><pre id="header-output" class="output-content"></pre></div>
+    </div>
+    <div class="output-block">
+      <span class="output-label">Payload</span>
+      <div class="output-area"><pre id="payload-output" class="output-content"></pre></div>
+    </div>
+    <div class="output-block">
+      <span class="output-label">Signature</span>
+      <div class="output-area sig-area"><pre id="sig-output" class="output-content sig-content"></pre></div>
+    </div>
+  </div>
+</ToolLayout>
+
+<script>
+  const input = document.getElementById('input') as HTMLTextAreaElement;
+  const errorEl = document.getElementById('error') as HTMLDivElement;
+  const outputSection = document.getElementById('output-section') as HTMLDivElement;
+  const headerOutput = document.getElementById('header-output') as HTMLPreElement;
+  const payloadOutput = document.getElementById('payload-output') as HTMLPreElement;
+  const sigOutput = document.getElementById('sig-output') as HTMLPreElement;
+
+  function base64UrlDecode(str: string): string {
+    const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(base64.length + (4 - (base64.length % 4)) % 4, '=');
+    try {
+      return decodeURIComponent(escape(atob(padded)));
+    } catch {
+      return atob(padded);
+    }
+  }
+
+  function decodeJWT() {
+    const raw = input.value.trim();
+    if (!raw) return;
+    errorEl.hidden = true;
+    outputSection.hidden = true;
+    try {
+      const parts = raw.split('.');
+      if (parts.length !== 3) throw new Error('A JWT must have exactly 3 dot-separated parts.');
+      const header = JSON.parse(base64UrlDecode(parts[0]));
+      const payload = JSON.parse(base64UrlDecode(parts[1]));
+      headerOutput.textContent = JSON.stringify(header, null, 2);
+      payloadOutput.textContent = JSON.stringify(payload, null, 2);
+      sigOutput.textContent = parts[2];
+      outputSection.hidden = false;
+    } catch (e) {
+      errorEl.textContent = 'Invalid JWT: ' + (e as Error).message;
+      errorEl.hidden = false;
+    }
+  }
+
+  function clearAll() {
+    input.value = '';
+    errorEl.hidden = true;
+    outputSection.hidden = true;
+    headerOutput.textContent = '';
+    payloadOutput.textContent = '';
+    sigOutput.textContent = '';
+  }
+
+  document.getElementById('btn-decode')!.addEventListener('click', decodeJWT);
+  document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+</script>
+
+<style>
+  .input-area {
+    width: 100%;
+    min-height: 160px;
+    padding: var(--spacing-md);
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    line-height: 1.5;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .input-area:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .input-area::placeholder {
+    color: var(--color-mute);
+  }
+  .button-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+  }
+  .error-msg {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-error);
+    background-color: var(--color-error-soft);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  .output-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  .output-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .output-label {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .output-area {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: var(--spacing-md);
+    min-height: 60px;
+  }
+  .output-content {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    line-height: 1.5;
+    color: var(--color-ink);
+    margin: 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .sig-area {
+    min-height: 40px;
+  }
+  .sig-content {
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+</style>

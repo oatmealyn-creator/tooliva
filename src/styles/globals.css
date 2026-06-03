@@ -318,7 +318,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 80vh;
   padding: var(--spacing-4xl) var(--spacing-lg);
   overflow: hidden;
   background-color: var(--color-canvas-soft);
@@ -374,4 +373,51 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 4px 12px;
+}
+
+.tools-band {
+  padding: var(--spacing-5xl) var(--spacing-lg);
+}
+
+.tools-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.tools-band .section-title {
+  font-size: var(--font-size-display-lg);
+  font-weight: var(--font-weight-display-lg);
+  letter-spacing: -1.28px;
+  color: var(--color-ink);
+  line-height: 1.25;
+  margin: 0;
+}
+
+.tools-band .section-subtitle {
+  font-size: var(--font-size-body-md);
+  font-weight: var(--font-weight-body-md);
+  color: var(--color-body);
+  line-height: 1.5;
+  margin: var(--spacing-sm) 0 0;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+  text-align: left;
+}
+
+@media (min-width: 600px) {
+  .tools-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 960px) {
+  .tools-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

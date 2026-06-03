@@ -1,0 +1,75 @@
+---
+import Layout from '../layouts/MainLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout>
+  <title slot="head">About — Tooliva</title>
+  <meta slot="head" name="description" content="About Tooliva — a collection of fast, clean developer utilities." />
+
+  <Nav />
+
+  <section class="page-band">
+    <div class="page-container">
+      <h1 class="page-title">About Tooliva.</h1>
+      <p class="page-subtitle">
+        A collection of fast, clean, ad-free developer utilities &mdash; built for engineers who value speed.
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="page-container content">
+      <p>
+        Tooliva brings together the tools you'd normally Google &mdash; JSON formatters,
+        JWT decoders, Base64 encoders, and more &mdash; all in one place. No ads,
+        no tracking, no round-trips to a search engine.
+      </p>
+      <p>
+        Every tool runs entirely in your browser. Your data never leaves your machine.
+      </p>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .page-band {
+    padding: var(--spacing-5xl) var(--spacing-lg) 0;
+  }
+  .page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .page-title {
+    font-size: var(--font-size-display-lg);
+    font-weight: var(--font-weight-display-lg);
+    letter-spacing: -1.28px;
+    color: var(--color-ink);
+    margin: 0;
+    line-height: 1.25;
+  }
+  .page-subtitle {
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-body-md);
+    color: var(--color-body);
+    margin: var(--spacing-sm) 0 0;
+    line-height: 1.5;
+  }
+  .content-band {
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-5xl);
+  }
+  .content p {
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-body-md);
+    color: var(--color-body);
+    line-height: 1.6;
+    margin: 0 0 var(--spacing-md);
+    max-width: 640px;
+  }
+  .content p:last-child {
+    margin-bottom: 0;
+  }
+</style>

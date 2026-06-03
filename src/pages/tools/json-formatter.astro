@@ -1,0 +1,129 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout title="JSON Formatter" description="Format, validate &amp; beautify JSON instantly.">
+  <textarea id="input" class="input-area" placeholder="Paste your JSON here..." spellcheck="false"></textarea>
+
+  <div class="button-row">
+    <button class="btn-primary" id="btn-format">Format</button>
+    <button class="btn-secondary" id="btn-minify">Minify</button>
+    <button class="btn-secondary" id="btn-copy">Copy</button>
+    <button class="btn-secondary" id="btn-clear">Clear</button>
+  </div>
+
+  <div id="error" class="error-msg" hidden></div>
+
+  <div class="output-area">
+    <pre id="output" class="output-content" aria-label="Formatted JSON output"></pre>
+  </div>
+</ToolLayout>
+
+<script>
+  const input = document.getElementById('input') as HTMLTextAreaElement;
+  const output = document.getElementById('output') as HTMLPreElement;
+  const errorEl = document.getElementById('error') as HTMLDivElement;
+
+  function formatJSON() {
+    const raw = input.value.trim();
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      output.textContent = JSON.stringify(parsed, null, 2);
+      errorEl.hidden = true;
+    } catch (e) {
+      output.textContent = '';
+      errorEl.textContent = 'Invalid JSON: ' + (e as Error).message;
+      errorEl.hidden = false;
+    }
+  }
+
+  function minifyJSON() {
+    const raw = input.value.trim();
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      output.textContent = JSON.stringify(parsed);
+      errorEl.hidden = true;
+    } catch (e) {
+      output.textContent = '';
+      errorEl.textContent = 'Invalid JSON: ' + (e as Error).message;
+      errorEl.hidden = false;
+    }
+  }
+
+  function copyOutput() {
+    const text = output.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).catch(() => {});
+  }
+
+  function clearAll() {
+    input.value = '';
+    output.textContent = '';
+    errorEl.hidden = true;
+  }
+
+  document.getElementById('btn-format')!.addEventListener('click', formatJSON);
+  document.getElementById('btn-minify')!.addEventListener('click', minifyJSON);
+  document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
+  document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+</script>
+
+<style>
+  .input-area {
+    width: 100%;
+    min-height: 280px;
+    padding: var(--spacing-md);
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    line-height: 1.5;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .input-area:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .input-area::placeholder {
+    color: var(--color-mute);
+  }
+
+  .button-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+  }
+
+  .error-msg {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-error);
+    background-color: var(--color-error-soft);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .output-area {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: var(--spacing-md);
+    min-height: 120px;
+  }
+
+  .output-content {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    line-height: 1.5;
+    color: var(--color-ink);
+    margin: 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+</style>

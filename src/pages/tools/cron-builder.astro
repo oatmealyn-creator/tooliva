@@ -1,0 +1,236 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout title="Cron Builder" description="Build and understand cron expressions.">
+  <div class="cron-fields">
+    <div class="field">
+      <label class="field-label" for="minute">Minute</label>
+      <input id="minute" class="field-input" value="*" placeholder="0-59" />
+    </div>
+    <div class="field">
+      <label class="field-label" for="hour">Hour</label>
+      <input id="hour" class="field-input" value="*" placeholder="0-23" />
+    </div>
+    <div class="field">
+      <label class="field-label" for="dom">Day</label>
+      <input id="dom" class="field-input" value="*" placeholder="1-31" />
+    </div>
+    <div class="field">
+      <label class="field-label" for="month">Month</label>
+      <input id="month" class="field-input" value="*" placeholder="1-12" />
+    </div>
+    <div class="field">
+      <label class="field-label" for="dow">Weekday</label>
+      <input id="dow" class="field-input" value="*" placeholder="0-6" />
+    </div>
+  </div>
+
+  <div class="expression-row">
+    <code id="expression" class="expression-display">* * * * *</code>
+    <button class="btn-primary" id="btn-explain">Explain</button>
+    <button class="btn-secondary" id="btn-copy">Copy</button>
+  </div>
+
+  <div id="error" class="error-msg" hidden></div>
+
+  <div class="output-area">
+    <pre id="output" class="output-content" aria-label="Cron explanation"></pre>
+  </div>
+</ToolLayout>
+
+<script>
+  const minute = document.getElementById('minute') as HTMLInputElement;
+  const hour = document.getElementById('hour') as HTMLInputElement;
+  const dom = document.getElementById('dom') as HTMLInputElement;
+  const month = document.getElementById('month') as HTMLInputElement;
+  const dow = document.getElementById('dow') as HTMLInputElement;
+  const expressionEl = document.getElementById('expression') as HTMLElement;
+  const output = document.getElementById('output') as HTMLPreElement;
+  const errorEl = document.getElementById('error') as HTMLDivElement;
+
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  function buildExpression(): string {
+    return [minute.value || '*', hour.value || '*', dom.value || '*', month.value || '*', dow.value || '*'].join(' ');
+  }
+
+  function updateExpression() {
+    expressionEl.textContent = buildExpression();
+  }
+
+  function explainField(field: string, label: string, values: string[], type: 'minute' | 'hour' | 'dom' | 'month' | 'dow'): string {
+    if (field === '*') return type === 'dow' || type === 'month' ? '' : `every ${label}`;
+    if (field.includes(',')) {
+      const parts = field.split(',').map(p => explainSingle(p, label, values, type)).filter(Boolean);
+      return parts.join(', ');
+    }
+    return explainSingle(field, label, values, type);
+  }
+
+  function explainSingle(field: string, label: string, values: string[], type: 'minute' | 'hour' | 'dom' | 'month' | 'dow'): string {
+    const stepMatch = field.match(/^\*\/(\d+)$/);
+    if (stepMatch) {
+      const n = parseInt(stepMatch[1], 10);
+      return `every ${n} ${label}`;
+    }
+
+    const rangeMatch = field.match(/^(\d+)-(\d+)$/);
+    if (rangeMatch) {
+      const s = parseInt(rangeMatch[1], 10);
+      const e = parseInt(rangeMatch[2], 10);
+      if (type === 'dow' || type === 'month') {
+        return `${values[s] || s} through ${values[e] || e}`;
+      }
+      return `${label} ${s}-${e}`;
+    }
+
+    const num = parseInt(field, 10);
+    if (!isNaN(num)) {
+      if (type === 'dow') return values[num] || field;
+      if (type === 'month') return values[num - 1] || field;
+      return `${label} ${num}`;
+    }
+
+    const nameIndex = values.findIndex(v => v.toLowerCase().startsWith(field.toLowerCase()));
+    if (nameIndex >= 0) return values[nameIndex];
+
+    return field;
+  }
+
+  function explain() {
+    errorEl.hidden = true;
+    try {
+      const expr = buildExpression();
+      const parts = expr.split(' ');
+      if (parts.length !== 5) throw new Error('Expression must have exactly 5 fields.');
+
+      const minExp = explainField(parts[0], 'minute', [], 'minute');
+      const hrExp  = explainField(parts[1], 'hour', [], 'hour');
+      const domExp = explainField(parts[2], 'day of month', [], 'dom');
+      const monExp = explainField(parts[3], 'month', monthNames, 'month');
+      const dowExp = explainField(parts[4], 'day of week', dayNames, 'dow');
+
+      const lines: string[] = [];
+
+      const stepAll = expr.match(/\*\//);
+      if (parts[0] === '*' && parts[1] === '*' && parts[2] === '*' && parts[3] === '*' && parts[4] === '*') {
+        lines.push('Every minute');
+      } else if (parts[2] === '*' && parts[3] === '*' && parts[4] === '*') {
+        const min = parts[0] === '*' ? 'every minute' : parts[0].startsWith('*/') ? `every ${parts[0].slice(2)} minutes` : `at minute ${parts[0]}`;
+        const hr = parts[1] === '*' ? 'every hour' : parts[1].startsWith('*/') ? `every ${parts[1].slice(2)} hours` : `at ${parts[1]}:00`;
+        lines.push(`${min}, ${hr}`);
+      } else {
+        if (minExp) lines.push(minExp);
+        if (hrExp) lines.push(hrExp);
+        if (domExp) lines.push(domExp);
+        if (monExp) lines.push(monExp);
+        if (dowExp) lines.push(dowExp);
+      }
+
+      output.textContent = lines.length
+        ? 'Runs ' + lines.join(', ') + '.'
+        : 'Cron expression: ' + expr;
+    } catch (e) {
+      errorEl.textContent = 'Invalid expression: ' + (e as Error).message;
+      errorEl.hidden = false;
+      output.textContent = '';
+    }
+  }
+
+  function copyExpression() {
+    const text = expressionEl.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).catch(() => {});
+  }
+
+  [minute, hour, dom, month, dow].forEach(el => {
+    el.addEventListener('input', updateExpression);
+  });
+
+  document.getElementById('btn-explain')!.addEventListener('click', explain);
+  document.getElementById('btn-copy')!.addEventListener('click', copyExpression);
+</script>
+
+<style>
+  .cron-fields {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-md);
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 80px;
+  }
+  .field-label {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .field-input {
+    padding: 8px 12px;
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    text-align: center;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .field-input:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .expression-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+  }
+  .expression-display {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-lg);
+    background-color: var(--color-canvas-soft);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    flex: 1;
+    min-width: 180px;
+  }
+  .error-msg {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-error);
+    background-color: var(--color-error-soft);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  .output-area {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: var(--spacing-md);
+    min-height: 60px;
+  }
+  .output-content {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    line-height: 1.5;
+    color: var(--color-ink);
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+</style>

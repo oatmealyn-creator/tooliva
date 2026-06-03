@@ -1,0 +1,101 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout title="UUID Generator" description="Generate random UUIDs in bulk.">
+  <div class="control-row">
+    <label class="count-label" for="count">Count</label>
+    <input id="count" class="count-input" type="number" value="5" min="1" max="100" />
+    <button class="btn-primary" id="btn-generate">Generate</button>
+    <button class="btn-secondary" id="btn-copy">Copy</button>
+    <button class="btn-secondary" id="btn-clear">Clear</button>
+  </div>
+
+  <div class="output-area">
+    <pre id="output" class="output-content" aria-label="Generated UUIDs"></pre>
+  </div>
+</ToolLayout>
+
+<script>
+  const countInput = document.getElementById('count') as HTMLInputElement;
+  const output = document.getElementById('output') as HTMLPreElement;
+
+  function generateUUID(): string {
+    if (crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = Math.random() * 16 | 0;
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
+
+  function generate() {
+    const n = Math.min(Math.max(parseInt(countInput.value, 10) || 1, 1), 100);
+    const uuids: string[] = [];
+    for (let i = 0; i < n; i++) {
+      uuids.push(generateUUID());
+    }
+    output.textContent = uuids.join('\n');
+  }
+
+  function copyOutput() {
+    const text = output.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).catch(() => {});
+  }
+
+  function clearAll() {
+    output.textContent = '';
+    countInput.value = '5';
+  }
+
+  document.getElementById('btn-generate')!.addEventListener('click', generate);
+  document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
+  document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+</script>
+
+<style>
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+  }
+  .count-label {
+    font-size: var(--font-size-body-sm);
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .count-input {
+    width: 80px;
+    padding: 6px 12px;
+    font-family: var(--font-geist);
+    font-size: var(--font-size-body-sm);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .count-input:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .output-area {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: var(--spacing-md);
+    min-height: 200px;
+  }
+  .output-content {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    line-height: 1.6;
+    color: var(--color-ink);
+    margin: 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+</style>

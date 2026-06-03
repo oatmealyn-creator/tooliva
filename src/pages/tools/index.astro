@@ -1,0 +1,68 @@
+---
+import Layout from '../../layouts/MainLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { tools } from '../../data/tools';
+---
+
+<Layout>
+  <title slot="head">All Tools — Tooliva</title>
+  <meta slot="head" name="description" content="Browse all developer tools on Tooliva." />
+
+  <Nav />
+
+  <section class="tools-index-band">
+    <div class="tools-index-container">
+      <h1 class="tools-index-title">All Tools.</h1>
+      <p class="tools-index-subtitle">Every utility in one place &mdash; format, decode, generate, and build.</p>
+      <div class="tools-grid">
+        {tools.map((tool) => (
+          <ToolCard name={tool.name} slug={tool.slug} description={tool.description} category={tool.category} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .tools-index-band {
+    padding: var(--spacing-5xl) var(--spacing-lg);
+  }
+  .tools-index-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .tools-index-title {
+    font-size: var(--font-size-display-lg);
+    font-weight: var(--font-weight-display-lg);
+    letter-spacing: -1.28px;
+    color: var(--color-ink);
+    margin: 0;
+    line-height: 1.25;
+  }
+  .tools-index-subtitle {
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-body-md);
+    color: var(--color-body);
+    margin: var(--spacing-sm) 0 var(--spacing-xl);
+    line-height: 1.5;
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  @media (min-width: 600px) {
+    .tools-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .tools-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

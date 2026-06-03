@@ -1,0 +1,70 @@
+---
+import MainLayout from './MainLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<MainLayout>
+  <title slot="head">{title} — Tooliva</title>
+  <meta slot="head" name="description" content={description} />
+
+  <Nav />
+
+  <section class="tool-band">
+    <div class="tool-container">
+      <span class="breadcrumb">Tools / {title}</span>
+      <h1 class="tool-title">{title}</h1>
+      <p class="tool-description">{description}</p>
+    </div>
+  </section>
+
+  <section class="tool-content">
+    <div class="tool-container">
+      <slot />
+    </div>
+  </section>
+
+  <Footer />
+</MainLayout>
+
+<style>
+  .tool-band {
+    padding: var(--spacing-4xl) var(--spacing-lg) 0;
+  }
+  .tool-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .breadcrumb {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tool-title {
+    font-size: var(--font-size-display-lg);
+    font-weight: var(--font-weight-display-lg);
+    letter-spacing: -1.28px;
+    color: var(--color-ink);
+    margin: var(--spacing-sm) 0 var(--spacing-xs);
+    line-height: 1.25;
+  }
+  .tool-description {
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-body-md);
+    color: var(--color-body);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .tool-content {
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-5xl);
+  }
+</style>
