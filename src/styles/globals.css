@@ -134,13 +134,13 @@
   }
 
   :focus {
-    outline: 2px solid #171717;
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
 
   ::selection {
-    background-color: #171717;
-    color: #ffffff;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
   }
 }
 
@@ -164,37 +164,6 @@
 .page-wrap {
   animation: pageFadeIn 0.3s ease;
   position: relative;
-}
-
-.site-logo {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 100;
-  font-size: var(--font-size-display-md);
-  font-weight: 600;
-  color: var(--color-ink);
-  text-decoration: none;
-  line-height: 1;
-  padding: 4px 8px;
-  border-radius: var(--border-radius-sm);
-  background-color: color-mix(in srgb, var(--color-canvas) 70%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: opacity 0.2s ease;
-}
-
-.site-logo:hover {
-  opacity: 0.7;
-}
-
-@media (max-width: 640px) {
-  .site-logo {
-    top: 12px;
-    left: 12px;
-    font-size: 18px;
-    padding: 2px 6px;
-  }
 }
 
 @keyframes pageFadeIn {
@@ -401,22 +370,6 @@
   padding: 4px 8px;
   font-size: var(--font-size-button-md);
   font-weight: var(--font-weight-button-md);
-}
-
-.badge-secondary {
-  background-color: var(--color-canvas-soft);
-  color: var(--color-body);
-  font-size: var(--font-size-caption);
-  border-radius: var(--border-radius-full);
-  padding: 0 4px;
-}
-
-.banner-marketing {
-  background-color: var(--color-canvas-soft);
-  color: var(--color-body);
-  font-size: var(--font-size-body-sm);
-  border-radius: var(--border-radius-full);
-  padding: 4px 8px;
 }
 
   .mesh-gradient {

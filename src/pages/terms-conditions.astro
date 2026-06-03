@@ -1,0 +1,128 @@
+---
+import Layout from '../layouts/MainLayout.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout pageTitle="Terms &amp; Conditions — Tooliva" pageDescription="Tooliva terms and conditions — the rules for using our free online developer tools.">
+  <section class="page-band">
+    <div class="page-container">
+      <h1 class="page-title">Terms &amp; Conditions.</h1>
+      <p class="page-subtitle">
+        By using Tooliva, you agree to these simple terms.
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="page-container content">
+      <h2 class="content-heading">Use of Service</h2>
+      <p>
+        Tooliva provides free online developer tools for personal and commercial use.
+        All tools are provided &ldquo;as is&rdquo; without warranty of any kind.
+      </p>
+
+      <h2 class="content-heading">No Warranty</h2>
+      <p>
+        The tools on this website are offered for convenience. We make no guarantees
+        regarding accuracy, reliability, or availability. Use them at your own discretion.
+      </p>
+
+      <h2 class="content-heading">Limitation of Liability</h2>
+      <p>
+        Tooliva and its maintainers shall not be liable for any damages arising from
+        the use or inability to use the tools provided on this website.
+      </p>
+
+      <h2 class="content-heading">Intellectual Property</h2>
+      <p>
+        The Tooliva name, logo, and website design are proprietary. The underlying
+        source code is available for reference. You may not reproduce, redistribute,
+        or modify the service for commercial purposes without prior written consent.
+      </p>
+
+      <h2 class="content-heading">Changes to Terms</h2>
+      <p>
+        We reserve the right to update these terms at any time. Continued use of the
+        site after changes constitutes acceptance of the new terms.
+      </p>
+
+      <h2 class="content-heading">Contact</h2>
+      <p>
+        For questions about these terms, reach out at <a href="mailto:hello@tooliva.com" class="page-link">hello@tooliva.com</a>.
+      </p>
+
+      <p class="content-meta">Last updated: June 2026</p>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .page-band {
+    padding: var(--spacing-5xl) var(--spacing-lg) 0;
+  }
+  .page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .page-title {
+    font-size: var(--font-size-display-lg);
+    font-weight: var(--font-weight-display-lg);
+    letter-spacing: -1.28px;
+    color: var(--color-ink);
+    margin: 0;
+    line-height: 1.25;
+  }
+  .page-subtitle {
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-body-md);
+    color: var(--color-body);
+    margin: var(--spacing-sm) 0 0;
+    line-height: 1.5;
+  }
+  .content-band {
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-5xl);
+  }
+  .content {
+    max-width: 720px;
+  }
+  .content-heading {
+    font-size: var(--font-size-display-sm);
+    font-weight: var(--font-weight-display-md);
+    color: var(--color-ink);
+    margin: var(--spacing-2xl) 0 var(--spacing-sm);
+    line-height: 1.3;
+    letter-spacing: -0.5px;
+  }
+  .content-heading:first-of-type {
+    margin-top: 0;
+  }
+  .content p {
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-body-md);
+    color: var(--color-body);
+    line-height: 1.7;
+    margin: 0 0 var(--spacing-md);
+  }
+  .content p:last-of-type {
+    margin-bottom: 0;
+  }
+  .content strong {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+  .page-link {
+    color: var(--color-link);
+    text-decoration: underline;
+    font-weight: 500;
+  }
+  .page-link:hover {
+    color: var(--color-link-deep);
+  }
+  .content-meta {
+    font-size: var(--font-size-body-sm) !important;
+    color: var(--color-mute) !important;
+    margin-top: var(--spacing-3xl) !important;
+  }
+</style>

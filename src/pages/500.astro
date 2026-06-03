@@ -3,13 +3,16 @@ import Layout from '../layouts/MainLayout.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout pageTitle="404 — Tooliva" pageDescription="Page not found.">
-  <section class="notfound-band">
-    <div class="notfound-content">
-      <span class="error-logo">Tooliva</span>
-      <h1 class="notfound-title">404.</h1>
-      <p class="notfound-subtitle">The page you&rsquo;re looking for doesn&rsquo;t exist.</p>
-      <a href="/" class="btn-primary notfound-cta">Go Home</a>
+<Layout pageTitle="Error — Tooliva" pageDescription="Something went wrong.">
+  <section class="err-band">
+    <div class="err-content">
+      <span class="err-logo">Tooliva</span>
+      <h1 class="err-code">500.</h1>
+      <p class="err-subtitle">Something went wrong. Please try again or go back to the homepage.</p>
+      <div class="err-actions">
+        <a href="/" class="btn-primary err-cta">Go Home</a>
+        <button onclick="location.reload()" class="btn-secondary err-cta">Try Again</button>
+      </div>
     </div>
   </section>
 
@@ -17,7 +20,7 @@ import Footer from '../components/Footer.astro';
 </Layout>
 
 <style>
-  .notfound-band {
+  .err-band {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,7 +28,7 @@ import Footer from '../components/Footer.astro';
     padding: var(--spacing-4xl) var(--spacing-lg);
     background-color: var(--color-canvas-soft);
   }
-  .notfound-content {
+  .err-content {
     text-align: center;
     max-width: 480px;
     display: flex;
@@ -33,14 +36,14 @@ import Footer from '../components/Footer.astro';
     align-items: center;
     gap: var(--spacing-md);
   }
-  .error-logo {
+  .err-logo {
     font-size: var(--font-size-body-sm);
     font-weight: 600;
     color: var(--color-mute);
     letter-spacing: 2px;
     text-transform: uppercase;
   }
-  .notfound-title {
+  .err-code {
     font-size: var(--font-size-display-xl);
     font-weight: var(--font-weight-display-xl);
     letter-spacing: -2.4px;
@@ -48,16 +51,21 @@ import Footer from '../components/Footer.astro';
     color: var(--color-ink);
     margin: 0;
   }
-  .notfound-subtitle {
+  .err-subtitle {
     font-size: var(--font-size-body-md);
     font-weight: var(--font-weight-body-md);
     color: var(--color-body);
     margin: 0;
     line-height: 1.5;
   }
-  .notfound-cta {
+  .err-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+  }
+  .err-cta {
     display: inline-block;
     text-decoration: none;
-    margin-top: var(--spacing-sm);
+    cursor: pointer;
   }
 </style>

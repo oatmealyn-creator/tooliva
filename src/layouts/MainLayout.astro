@@ -23,7 +23,7 @@ const pageUrl = Astro.url.href;
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     <meta name="keywords" content={pageKeywords} />
@@ -80,7 +80,6 @@ const pageUrl = Astro.url.href;
   </head>
   <body>
     <main class="page-wrap">
-      <a href="/" class="site-logo">Tooliva</a>
       <slot />
     </main>
   </body>
