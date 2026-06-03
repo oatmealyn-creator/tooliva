@@ -10,7 +10,7 @@ const { name, slug, description, category } = Astro.props;
 ---
 
 <a href={`/tools/${slug}`} class="tool-card">
-  <span class="category">{category}</span>
+  <span class="category">&lt;{category} /&gt;</span>
   <h3 class="name">{name}</h3>
   <p class="description">{description}</p>
 </a>
@@ -27,8 +27,8 @@ const { name, slug, description, category } = Astro.props;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
   .tool-card:hover {
-    box-shadow: var(--box-shadow-level-4);
-    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-level-4), 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-4px);
   }
   .category {
     font-family: var(--font-geist-mono);

@@ -2,40 +2,52 @@
 import ToolLayout from '../../layouts/ToolLayout.astro';
 ---
 
-<ToolLayout title="Cron Builder" description="Build and understand cron expressions.">
+<ToolLayout
+  title="Cron Builder"
+  description="Free online cron builder — build, understand, and generate cron expressions instantly. A visual cron expression generator for DevOps."
+  keywords="cron builder, cron expression generator, cron expression builder, cron job builder, cron schedule generator, online cron builder, free cron tool, cron maker"
+>
   <div class="cron-fields">
     <div class="field">
       <label class="field-label" for="minute">Minute</label>
-      <input id="minute" class="field-input" value="*" placeholder="0-59" />
+      <input id="minute" class="field-input" value="*" placeholder="0-59" pattern="[0-9*,/\-]+" />
     </div>
     <div class="field">
       <label class="field-label" for="hour">Hour</label>
-      <input id="hour" class="field-input" value="*" placeholder="0-23" />
+      <input id="hour" class="field-input" value="*" placeholder="0-23" pattern="[0-9*,/\-]+" />
     </div>
     <div class="field">
       <label class="field-label" for="dom">Day</label>
-      <input id="dom" class="field-input" value="*" placeholder="1-31" />
+      <input id="dom" class="field-input" value="*" placeholder="1-31" pattern="[0-9*,/\-]+" />
     </div>
     <div class="field">
       <label class="field-label" for="month">Month</label>
-      <input id="month" class="field-input" value="*" placeholder="1-12" />
+      <input id="month" class="field-input" value="*" placeholder="1-12" pattern="[0-9*,/\-]+" />
     </div>
     <div class="field">
       <label class="field-label" for="dow">Weekday</label>
-      <input id="dow" class="field-input" value="*" placeholder="0-6" />
+      <input id="dow" class="field-input" value="*" placeholder="0-6" pattern="[0-9*,/\-]+" />
     </div>
   </div>
 
   <div class="expression-row">
-    <code id="expression" class="expression-display">* * * * *</code>
+    <code id="expression" class="expression-display" aria-live="polite" aria-label="Cron expression">* * * * *</code>
     <button class="btn-primary" id="btn-explain">Explain</button>
     <button class="btn-secondary" id="btn-copy">Copy</button>
+    <button class="btn-secondary" id="btn-clear">Clear</button>
+    <button class="btn-secondary" id="btn-sample">Try sample</button>
+    <span class="shortcut-hint" aria-live="polite">Ctrl+Enter to explain</span>
   </div>
 
-  <div id="error" class="error-msg" hidden></div>
+  <div id="error" class="error-msg" role="alert" hidden></div>
 
   <div class="output-area">
-    <pre id="output" class="output-content" aria-label="Cron explanation"></pre>
+    <pre id="output" class="output-content" aria-label="Cron explanation" data-placeholder="Cron expression explanation will appear here..."></pre>
+  </div>
+
+  <div class="next-times-area" id="next-times-area" hidden>
+    <span class="output-label">Next 5 run times</span>
+    <div class="next-times-box" id="next-times-box"></div>
   </div>
 </ToolLayout>
 
@@ -48,15 +60,29 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   const expressionEl = document.getElementById('expression') as HTMLElement;
   const output = document.getElementById('output') as HTMLPreElement;
   const errorEl = document.getElementById('error') as HTMLDivElement;
+  const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
+  const nextTimesArea = document.getElementById('next-times-area') as HTMLDivElement;
+  const nextTimesBox = document.getElementById('next-times-box') as HTMLDivElement;
 
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const shortDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const shortMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  function sanitizeField(val: string): string {
+    return val.replace(/[^0-9*,/\-]/g, '');
+  }
 
   function buildExpression(): string {
-    return [minute.value || '*', hour.value || '*', dom.value || '*', month.value || '*', dow.value || '*'].join(' ');
+    return [sanitizeField(minute.value) || '*', sanitizeField(hour.value) || '*', sanitizeField(dom.value) || '*', sanitizeField(month.value) || '*', sanitizeField(dow.value) || '*'].join(' ');
   }
 
   function updateExpression() {
+    minute.value = sanitizeField(minute.value) || '*';
+    hour.value = sanitizeField(hour.value) || '*';
+    dom.value = sanitizeField(dom.value) || '*';
+    month.value = sanitizeField(month.value) || '*';
+    dow.value = sanitizeField(dow.value) || '*';
     expressionEl.textContent = buildExpression();
   }
 
@@ -71,36 +97,80 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function explainSingle(field: string, label: string, values: string[], type: 'minute' | 'hour' | 'dom' | 'month' | 'dow'): string {
     const stepMatch = field.match(/^\*\/(\d+)$/);
-    if (stepMatch) {
-      const n = parseInt(stepMatch[1], 10);
-      return `every ${n} ${label}`;
-    }
-
+    if (stepMatch) { const n = parseInt(stepMatch[1], 10); return `every ${n} ${label}`; }
     const rangeMatch = field.match(/^(\d+)-(\d+)$/);
     if (rangeMatch) {
-      const s = parseInt(rangeMatch[1], 10);
-      const e = parseInt(rangeMatch[2], 10);
-      if (type === 'dow' || type === 'month') {
-        return `${values[s] || s} through ${values[e] || e}`;
-      }
+      const s = parseInt(rangeMatch[1], 10); const e = parseInt(rangeMatch[2], 10);
+      if (type === 'dow' || type === 'month') return `${values[s] || s} through ${values[e] || e}`;
       return `${label} ${s}-${e}`;
     }
-
     const num = parseInt(field, 10);
     if (!isNaN(num)) {
       if (type === 'dow') return values[num] || field;
       if (type === 'month') return values[num - 1] || field;
       return `${label} ${num}`;
     }
-
     const nameIndex = values.findIndex(v => v.toLowerCase().startsWith(field.toLowerCase()));
     if (nameIndex >= 0) return values[nameIndex];
-
     return field;
+  }
+
+  function matchesField(value: number, field: string): boolean {
+    if (field === '*') return true;
+    for (const part of field.split(',')) {
+      const step = part.match(/^\*\/(\d+)$/);
+      if (step) { if (value % parseInt(step[1], 10) === 0) return true; }
+      const range = part.match(/^(\d+)-(\d+)$/);
+      if (range) { const s = parseInt(range[1], 10); const e = parseInt(range[2], 10); if (value >= s && value <= e) return true; }
+      const n = parseInt(part, 10);
+      if (!isNaN(n) && value === n) return true;
+    }
+    return false;
+  }
+
+  function getNextTimes(expr: string, count: number): Date[] {
+    const parts = expr.split(' ');
+    if (parts.length !== 5) return [];
+    const [minField, hourField, domField, monthField, dowField] = parts;
+    const results: Date[] = [];
+    const now = new Date();
+    let current = new Date(now);
+    current.setSeconds(0, 0);
+    let attempts = 0;
+    while (results.length < count && attempts < 525600) {
+      attempts++;
+      current = new Date(current.getTime() + 60000);
+      const m = current.getMinutes();
+      const h = current.getHours();
+      const d = current.getDate();
+      const mo = current.getMonth() + 1;
+      const dw = current.getDay();
+      if (matchesField(m, minField) && matchesField(h, hourField) && matchesField(d, domField) && matchesField(mo, monthField) && matchesField(dw, dowField)) {
+        results.push(new Date(current));
+      }
+    }
+    return results;
+  }
+
+  function formatDate(d: Date): string {
+    const dow = shortDayNames[d.getDay()];
+    const mon = shortMonthNames[d.getMonth()];
+    const day = d.getDate();
+    const year = d.getFullYear();
+    const hh = d.getHours().toString().padStart(2, '0');
+    const mm = d.getMinutes().toString().padStart(2, '0');
+    return `${dow} ${mon} ${day}, ${year} ${hh}:${mm}`;
+  }
+
+  function loadSample() {
+    minute.value = '0'; hour.value = '9'; dom.value = '*'; month.value = '*'; dow.value = '1-5';
+    updateExpression();
+    explain();
   }
 
   function explain() {
     errorEl.hidden = true;
+    nextTimesArea.hidden = true;
     try {
       const expr = buildExpression();
       const parts = expr.split(' ');
@@ -113,8 +183,6 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
       const dowExp = explainField(parts[4], 'day of week', dayNames, 'dow');
 
       const lines: string[] = [];
-
-      const stepAll = expr.match(/\*\//);
       if (parts[0] === '*' && parts[1] === '*' && parts[2] === '*' && parts[3] === '*' && parts[4] === '*') {
         lines.push('Every minute');
       } else if (parts[2] === '*' && parts[3] === '*' && parts[4] === '*') {
@@ -129,9 +197,13 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
         if (dowExp) lines.push(dowExp);
       }
 
-      output.textContent = lines.length
-        ? 'Runs ' + lines.join(', ') + '.'
-        : 'Cron expression: ' + expr;
+      output.textContent = lines.length ? 'Runs ' + lines.join(', ') + '.' : 'Cron expression: ' + expr;
+
+      const next = getNextTimes(expr, 5);
+      if (next.length > 0) {
+        nextTimesBox.innerHTML = next.map(d => '<div class="next-time-item">' + formatDate(d) + '</div>').join('');
+        nextTimesArea.hidden = false;
+      }
     } catch (e) {
       errorEl.textContent = 'Invalid expression: ' + (e as Error).message;
       errorEl.hidden = false;
@@ -142,15 +214,44 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   function copyExpression() {
     const text = expressionEl.textContent;
     if (!text) return;
-    navigator.clipboard.writeText(text).catch(() => {});
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = copyBtn.textContent || '';
+      copyBtn.textContent = 'Copied ✓';
+      copyBtn.classList.add('btn-copied');
+      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
+    }).catch(() => {});
   }
 
-  [minute, hour, dom, month, dow].forEach(el => {
-    el.addEventListener('input', updateExpression);
-  });
+  function clearAll() {
+    minute.value = '*'; hour.value = '*'; dom.value = '*'; month.value = '*'; dow.value = '*';
+    updateExpression();
+    output.textContent = '';
+    errorEl.hidden = true;
+    nextTimesArea.hidden = true;
+  }
 
-  document.getElementById('btn-explain')!.addEventListener('click', explain);
-  document.getElementById('btn-copy')!.addEventListener('click', copyExpression);
+  function handleKeydown(e: KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); explain(); }
+    if (e.key === 'Escape') { clearAll(); }
+  }
+
+  function mount() {
+    [minute, hour, dom, month, dow].forEach(el => el.addEventListener('input', updateExpression));
+    document.addEventListener('keydown', handleKeydown);
+    document.getElementById('btn-explain')!.addEventListener('click', explain);
+    document.getElementById('btn-copy')!.addEventListener('click', copyExpression);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+    document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+  }
+
+  function unmount() {
+    [minute, hour, dom, month, dow].forEach(el => el.removeEventListener('input', updateExpression));
+    document.removeEventListener('keydown', handleKeydown);
+  }
+
+  mount();
+
+  document.addEventListener('astro:before-swap', unmount);
 </script>
 
 <style>
@@ -165,7 +266,7 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     flex-direction: column;
     gap: 4px;
     flex: 1;
-    min-width: 80px;
+    min-width: 72px;
   }
   .field-label {
     font-family: var(--font-geist-mono);
@@ -208,6 +309,16 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     flex: 1;
     min-width: 180px;
   }
+  .shortcut-hint {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+  }
+  @media (min-width: 640px) {
+    .shortcut-hint {
+      margin-left: auto;
+    }
+  }
   .error-msg {
     font-family: var(--font-geist-mono);
     font-size: var(--font-size-body-sm);
@@ -221,8 +332,10 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     background-color: var(--color-canvas-soft-2);
     border-radius: var(--border-radius-md);
     border: 1px solid #00000014;
-    padding: var(--spacing-md);
-    min-height: 60px;
+    padding: 1rem;
+    min-height: 200px;
+    max-height: 600px;
+    overflow-y: auto;
   }
   .output-content {
     font-family: var(--font-geist-mono);
@@ -231,6 +344,34 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     color: var(--color-ink);
     margin: 0;
     white-space: pre-wrap;
-    overflow-x: auto;
+    word-break: break-all;
+  }
+  .next-times-area {
+    margin-top: var(--spacing-md);
+  }
+  .next-times-area .output-label {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: var(--spacing-xs);
+  }
+  .next-times-box {
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  .next-time-item {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    color: var(--color-ink);
+    padding: 4px 0;
+    line-height: 1.5;
+  }
+  .next-time-item + .next-time-item {
+    border-top: 1px solid var(--color-hairline);
   }
 </style>

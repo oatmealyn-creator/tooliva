@@ -1,15 +1,22 @@
 ---
+const pathname = Astro.url.pathname;
 
+function isActive(href: string): boolean {
+  if (href === '/') return pathname === '/';
+  return pathname.startsWith(href);
+}
 ---
 
-<nav class="nav-bar flex items-center justify-between px-lg py-sm">
+<nav class="nav-bar flex items-center justify-between px-lg py-sm" aria-label="Main navigation">
   <div class="flex items-center">
     <a href="/" class="logo">Tooliva</a>
   </div>
-  
-  <div class="hidden md:flex items-center space-x-md">
-    <a href="/tools" class="nav-link">Tools</a>
-    <a href="/about" class="nav-link">About</a>
-    <a href="/contact" class="nav-link">Contact</a>
+
+  <input type="checkbox" id="menu-toggle" class="menu-toggle" />
+  <label for="menu-toggle" class="menu-icon" aria-label="Toggle navigation menu" role="button" tabindex="0">☰</label>
+
+  <div class="nav-links">
+    <a href="/about" class:list={['nav-link', { active: isActive('/about') }]}>About</a>
+    <a href="/contact" class:list={['nav-link', { active: isActive('/contact') }]}>Contact</a>
   </div>
 </nav>

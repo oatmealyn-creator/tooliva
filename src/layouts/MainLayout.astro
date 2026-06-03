@@ -6,11 +6,15 @@ import '../styles/globals.css';
 export interface Props {
   pageTitle?: string;
   pageDescription?: string;
+  pageKeywords?: string;
+  ogImage?: string;
 }
 
 const {
-  pageTitle = 'Tooliva',
-  pageDescription = 'Fast, clean developer utilities — format JSON, decode JWT, encode Base64, and more.',
+  pageTitle = 'Tooliva — Free Online Developer Tools | JSON Formatter, JWT Decoder & More',
+  pageDescription = 'Free online developer tools — JSON formatter, JWT decoder, Base64 encoder, UUID generator, and cron builder. Fast, clean, and privacy-focused utilities for developers.',
+  pageKeywords = 'json formatter, json formatter online, best json formatter, pretty json formatter, free online json formatter, jwt decoder, jwt decoder online, developer tools, online developer utilities, free developer tools',
+  ogImage = 'https://tooliva.pages.dev/og-image.svg',
 } = Astro.props;
 
 const pageUrl = Astro.url.href;
@@ -22,17 +26,79 @@ const pageUrl = Astro.url.href;
     <meta name="viewport" content="width=device-width" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
+    <meta name="keywords" content={pageKeywords} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Tooliva" />
+    <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="canonical" href={pageUrl} />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Tooliva" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="generator" content={Astro.generator} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tooliva.pages.dev/#organization",
+          "name": "Tooliva",
+          "url": "https://tooliva.pages.dev/",
+          "description": "Free online developer tools and utilities.",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://tooliva.pages.dev/og-image.svg",
+            "width": 1200,
+            "height": 630
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://tooliva.pages.dev/#website",
+          "url": "https://tooliva.pages.dev/",
+          "name": "Tooliva",
+          "description": "Free online developer tools — JSON formatter, JWT decoder, Base64 encoder, UUID generator, and cron builder.",
+          "publisher": { "@id": "https://tooliva.pages.dev/#organization" },
+          "inLanguage": "en-US"
+        }
+      ]
+    })} />
     <slot name="head" />
   </head>
   <body>
-    <slot />
+    <main class="page-wrap">
+      <a href="/" class="site-logo">Tooliva</a>
+      <slot />
+    </main>
   </body>
 </html>
+
+<script>
+  function initFadeIn() {
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      }
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+  }
+
+  document.addEventListener('DOMContentLoaded', initFadeIn);
+  document.addEventListener('astro:page-load', initFadeIn);
+</script>

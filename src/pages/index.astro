@@ -1,18 +1,41 @@
 ---
-import Nav from '../components/Nav.astro';
 import ToolCard from '../components/ToolCard.astro';
+import Footer from '../components/Footer.astro';
 import Layout from '../layouts/MainLayout.astro';
 import { tools } from '../data/tools';
 ---
 
-<Layout pageTitle="Tooliva — Developer Tools, Done Right." pageDescription="Fast, clean developer utilities — JSON formatter, JWT decoder, Base64 encoder, UUID generator, and cron builder.">
-  <Nav />
-
+<Layout
+  pageTitle="Tooliva — Free Online Developer Tools | JSON Formatter, JWT Decoder & More"
+  pageDescription="Use the best free online JSON formatter and JWT decoder at Tooliva. Pretty print, validate, and format JSON instantly. Decode JWT tokens online with our privacy-first developer tools."
+  pageKeywords="json formatter, json formatter online, best json formatter, pretty json formatter, free online json formatter, jwt decoder, jwt decoder online, json beautifier, json prettifier, json validator, json parser, online json formatter tool, jwt token decoder, developer tools online, free developer tools"
+>
   <section class="hero-band">
     <div class="mesh-gradient" aria-hidden="true" />
+    <div class="grid-pattern" aria-hidden="true" />
+    <div class="grain-overlay" aria-hidden="true" />
+
+    <div class="floating-elements" aria-hidden="true">
+      <span class="float-el el-1">{ }</span>
+      <span class="float-el el-2">[ ]</span>
+      <span class="float-el el-3">&lt;/&gt;</span>
+      <span class="float-el el-4">=&gt;</span>
+      <span class="float-el el-5">/**</span>
+    </div>
+
     <div class="hero-content">
-      <span class="badge-secondary">Tools &middot; Utility &middot; Speed</span>
-      <h1 class="hero-title">Developer tools, done right.</h1>
+      <span class="badge-pill">
+        <span class="pill-static">Tools &middot; Utility &middot;</span>
+        <span class="pill-rotating-wrap" id="rotating-wrap">
+          <span class="pill-rotating" id="rotating-text">
+            <span>Speed</span>
+          </span>
+        </span>
+        <span class="pill-tag">&lt;Utility /&gt;</span>
+      </span>
+      <h1 class="hero-title">
+        Developer tools, done <span class="highlight-word">right</span>.
+      </h1>
       <p class="hero-subtitle">
         The tools you Google &mdash; but fast, clean, and instant.
       </p>
@@ -23,10 +46,11 @@ import { tools } from '../data/tools';
     </div>
   </section>
 
-  <section class="tools-band">
+  <section class="tools-band fade-in">
     <div class="tools-container">
       <h2 class="section-title">Every tool you need.</h2>
       <p class="section-subtitle">Quick, reliable utilities for developers &mdash; no fuss, just speed.</p>
+
       <div class="tools-grid">
         {tools.map((tool) => (
           <ToolCard name={tool.name} slug={tool.slug} description={tool.description} category={tool.category} />
@@ -35,31 +59,128 @@ import { tools } from '../data/tools';
     </div>
   </section>
 
-  <section class="faq-band">
-    <div class="faq-container">
-      <h2 class="section-title">Frequently asked questions</h2>
-      <div class="faq-list">
-        <div class="faq-item">
-          <h3 class="faq-question">Is Tooliva free?</h3>
-          <p class="faq-answer">Yes, every tool is completely free to use.</p>
+  <section class="seo-content-band fade-in">
+    <div class="seo-content-container">
+      <h2 class="section-title">Free Online Developer Tools for Every Workflow</h2>
+
+      <div class="seo-content-grid">
+        <article class="seo-content-block">
+          <h3 class="seo-content-heading">JSON Formatter — Format, Validate & Beautify JSON Online</h3>
+          <p>
+            Working with JSON data is a daily necessity for modern developers, and having a reliable <strong>JSON formatter</strong> at your fingertips can save you hours of debugging. Tooliva offers the best free <strong>JSON formatter online</strong> — a powerful tool that instantly formats, validates, and beautifies your JSON data. Whether you need to pretty print a messy API response, validate a configuration file, or simply make your data human-readable, our <strong>pretty JSON formatter</strong> handles it with zero friction.
+          </p>
+          <p>
+            Our <strong>free online JSON formatter</strong> goes beyond simple formatting. It acts as a full <strong>JSON validator</strong> and <strong>JSON parser</strong>, catching syntax errors before they cause problems in your application. Unlike other <strong>online JSON formatter</strong> tools that send your data to a server, Tooliva processes everything client-side. Your data never leaves your browser, making this the most private <strong>JSON prettifier</strong> available. Use it as a <strong>JSON beautifier</strong>, <strong>JSON lint</strong> checker, or <strong>JSON viewer</strong> — it handles JSON of any size or complexity with ease. For developers searching for a <strong>JSON formatter tool</strong> that respects their privacy, this is the <strong>best JSON formatter</strong> choice.
+          </p>
+        </article>
+
+        <article class="seo-content-block">
+          <h3 class="seo-content-heading">JWT Decoder — Inspect & Decode JWT Tokens Instantly</h3>
+          <p>
+            JSON Web Tokens are the backbone of modern authentication, and knowing what's inside a token is essential for debugging and security audits. Tooliva's <strong>JWT decoder</strong> is the fastest way to decode and inspect your tokens. Our <strong>JWT decoder online</strong> instantly parses the header, payload, and signature sections of any RFC 7519 compliant token, presenting the data in a clean, readable format. Use it as a <strong>JWT token decoder</strong>, <strong>JWT inspector</strong>, or <strong>JWT viewer</strong> — whatever you call it, it gets the job done.
+          </p>
+          <p>
+            This <strong>JWT decoder tool</strong> is designed with developer workflows in mind. Paste a token and immediately see the decoded claims, expiration timestamps, and issuer details in a structured layout. Unlike many <strong>JWT parser</strong> tools that require server-side processing, Tooliva's decoder runs entirely in your browser, ensuring sensitive token data never touches a network. Whether you're debugging an OAuth flow, verifying a token's payload, or auditing claims, our <strong>decode JWT token</strong> tool gives you complete visibility with zero compromises on security. It works perfectly as a drop-in replacement for jwt.io when you need a fast, private <strong>JWT decoder online</strong>.
+          </p>
+        </article>
+
+        <article class="seo-content-block">
+          <h3 class="seo-content-heading">More Developer Tools for Your Daily Workflow</h3>
+          <p>
+            Beyond the <strong>JSON formatter</strong> and <strong>JWT decoder</strong>, Tooliva offers a growing suite of <strong>free online tools</strong> for web developers. Our <strong>Base64 encoder and decoder</strong> lets you encode strings and decode Base64 data instantly. Generate unique identifiers with our <strong>UUID generator</strong>, supporting UUID v4 with bulk generation capabilities. Build and understand cron schedules with the <strong>cron builder</strong> — perfect for DevOps engineers managing scheduled tasks. All our <strong>developer tools online</strong> are free, private, and require no account setup. Just open a tool and start working. We're building the best collection of <strong>free developer tools</strong> for the modern web developer.
+          </p>
+          <p>
+            Every utility on Tooliva follows the same philosophy: fast loading, clean interface, client-side processing, and zero tracking. We don't store your data, we don't show intrusive ads, and we never require sign-ups. Whether you need a <strong>JSON formatter online</strong> for a quick format, a <strong>JWT decoder online</strong> for debugging authentication, or any other <strong>online developer utility</strong>, Tooliva is your go-to resource. Bookmark us and come back any time you need reliable, fast, and private developer tools.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-band fade-in">
+    <div class="features-container">
+      <h2 class="section-title">Why Tooliva?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">{ }</div>
+          <h3 class="feature-title">Blazing Fast</h3>
+          <p class="feature-text">Tools load instantly and process data in your browser. No server calls, no waiting.</p>
         </div>
-        <div class="faq-item">
-          <h3 class="faq-question">Do I need an account?</h3>
-          <p class="faq-answer">No. Just open a tool and start using it.</p>
+        <div class="feature-card">
+          <div class="feature-icon">&#128274;</div>
+          <h3 class="feature-title">Privacy First</h3>
+          <p class="feature-text">Everything runs client-side. Your data never leaves your device. Period.</p>
         </div>
-        <div class="faq-item">
-          <h3 class="faq-question">Is my data safe?</h3>
-          <p class="faq-answer">Yes. All tools run in your browser; your data never leaves your device.</p>
-        </div>
-        <div class="faq-item">
-          <h3 class="faq-question">Can I use these tools offline?</h3>
-          <p class="faq-answer">Once a tool page loads, it works without an internet connection.</p>
-        </div>
-        <div class="faq-item">
-          <h3 class="faq-question">Are more tools coming?</h3>
-          <p class="faq-answer">Yes, we add new tools regularly.</p>
+        <div class="feature-card">
+          <div class="feature-icon">&#9889;</div>
+          <h3 class="feature-title">Zero Setup</h3>
+          <p class="feature-text">No accounts, no sign-ups, no subscriptions. Open a tool and use it immediately.</p>
         </div>
       </div>
     </div>
   </section>
+
+  <section class="faq-band fade-in">
+    <div class="faq-container">
+      <h2 class="section-title">Frequently asked questions</h2>
+      <div class="faq-list">
+        <article class="faq-item">
+          <h3 class="faq-question">Is Tooliva free?</h3>
+          <p class="faq-answer">Yes, every tool is completely free to use. There are no hidden charges, premium tiers, or usage limits. All <strong>free online developer tools</strong> on Tooliva are available to everyone without any cost.</p>
+        </article>
+        <article class="faq-item">
+          <h3 class="faq-question">How does the JSON formatter work?</h3>
+          <p class="faq-answer">Our <strong>JSON formatter online</strong> parses and pretty-prints your JSON data entirely in your browser. Paste or type your JSON, and it instantly formats with proper indentation. It also validates your JSON syntax and highlights errors, acting as both a <strong>JSON validator</strong> and <strong>JSON beautifier</strong> in one tool.</p>
+        </article>
+        <article class="faq-item">
+          <h3 class="faq-question">Is the JWT decoder safe to use with real tokens?</h3>
+          <p class="faq-answer">Absolutely. The <strong>JWT decoder online</strong> runs entirely client-side. Your token never leaves your browser, so sensitive authentication data stays private. Use it confidently as your go-to <strong>JWT token decoder</strong> for debugging production tokens.</p>
+        </article>
+        <article class="faq-item">
+          <h3 class="faq-question">Do I need an account?</h3>
+          <p class="faq-answer">No. Just open a tool and start using it. There is no registration, no email sign-up, and no data collection. That's what makes Tooliva the <strong>best JSON formatter</strong> and developer tools platform for privacy-conscious users.</p>
+        </article>
+        <article class="faq-item">
+          <h3 class="faq-question">Is my data safe?</h3>
+          <p class="faq-answer">Yes. All tools run in your browser using client-side JavaScript. Your data never leaves your device. We don't store, log, or transmit any information you paste into our tools.</p>
+        </article>
+        <article class="faq-item">
+          <h3 class="faq-question">Can I use these tools offline?</h3>
+          <p class="faq-answer">Once a tool page loads, it works without an internet connection. All processing is done locally in your browser, making our <strong>pretty JSON formatter</strong> and other utilities fully functional offline.</p>
+        </article>
+        <article class="faq-item">
+          <h3 class="faq-question">What is the difference between JSON format, validate, and beautify?</h3>
+          <p class="faq-answer">Formatting applies consistent indentation to raw JSON. Validation checks if your JSON follows proper syntax rules. Beautifying (or pretty printing) is the same as formatting — making compressed JSON human-readable. Tooliva's <strong>free online JSON formatter</strong> does all three simultaneously.</p>
+        </article>
+        <article class="faq-item">
+          <h3 class="faq-question">Are more tools coming?</h3>
+          <p class="faq-answer">We're building new utilities regularly. Our goal is to become the most comprehensive collection of <strong>free online developer tools</strong> on the web. Suggestions are always welcome.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
 </Layout>
+
+<script>
+  const words = ['Speed', 'Formatting', 'JSON', 'Security', 'Encoding', 'UUIDs'];
+  const el = document.getElementById('rotating-text');
+  const wrap = document.getElementById('rotating-wrap');
+  let index = 0;
+
+  function cycleWord() {
+    index = (index + 1) % words.length;
+    const currentOffset = -(index * 1.3);
+    el.style.transform = `translateY(${currentOffset}em)`;
+  }
+
+  for (let i = 0; i < words.length; i++) {
+    const span = document.createElement('span');
+    span.textContent = words[i];
+    el.appendChild(span);
+  }
+  el.style.transform = 'translateY(0)';
+
+  setInterval(cycleWord, 2800);
+</script>

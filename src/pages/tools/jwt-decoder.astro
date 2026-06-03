@@ -2,28 +2,43 @@
 import ToolLayout from '../../layouts/ToolLayout.astro';
 ---
 
-<ToolLayout title="JWT Decoder" description="Decode and inspect JSON Web Tokens.">
-  <textarea id="input" class="input-area" placeholder="Paste your JWT here..." spellcheck="false"></textarea>
+<ToolLayout
+  title="JWT Decoder"
+  description="Free online JWT decoder — decode, inspect, and parse JSON Web Tokens instantly. A fast JWT token decoder tool with privacy-first client-side processing."
+  keywords="jwt decoder, jwt decoder online, jwt token decoder, jwt inspector, jwt parser, jwt viewer, decode jwt token, json web token decoder, online jwt decoder"
+>
+  <div class="tool-header-row">
+    <label for="input" class="sr-only">JWT input</label>
+    <textarea id="input" class="input-area" placeholder="Paste your JWT here..." spellcheck="false" autofocus></textarea>
+    <button class="btn-secondary-sm try-sample" id="btn-sample">Try sample</button>
+  </div>
 
   <div class="button-row">
     <button class="btn-primary" id="btn-decode">Decode</button>
+    <button class="btn-secondary" id="btn-copy">Copy</button>
     <button class="btn-secondary" id="btn-clear">Clear</button>
+    <span class="shortcut-hint" aria-live="polite">Ctrl+Enter to decode</span>
   </div>
 
-  <div id="error" class="error-msg" hidden></div>
+  <div id="error" class="error-msg" role="alert" hidden></div>
 
   <div class="output-section" id="output-section" hidden>
     <div class="output-block">
-      <span class="output-label">Header</span>
-      <div class="output-area"><pre id="header-output" class="output-content"></pre></div>
+      <div class="output-label-row">
+        <span class="output-label">Header</span>
+      </div>
+      <div class="output-area"><pre id="header-output" class="output-content" data-placeholder="Decoded header will appear here..."></pre></div>
     </div>
     <div class="output-block">
-      <span class="output-label">Payload</span>
-      <div class="output-area"><pre id="payload-output" class="output-content"></pre></div>
+      <div class="output-label-row">
+        <span class="output-label">Payload</span>
+        <span id="expiry-badge" class="expiry-badge"></span>
+      </div>
+      <div class="output-area"><pre id="payload-output" class="output-content" data-placeholder="Decoded payload will appear here..."></pre></div>
     </div>
     <div class="output-block">
       <span class="output-label">Signature</span>
-      <div class="output-area sig-area"><pre id="sig-output" class="output-content sig-content"></pre></div>
+      <div class="output-area sig-area"><pre id="sig-output" class="output-content sig-content" data-placeholder="Signature will appear here..."></pre></div>
     </div>
   </div>
 </ToolLayout>
@@ -35,20 +50,44 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   const headerOutput = document.getElementById('header-output') as HTMLPreElement;
   const payloadOutput = document.getElementById('payload-output') as HTMLPreElement;
   const sigOutput = document.getElementById('sig-output') as HTMLPreElement;
+  const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
+  const expiryBadge = document.getElementById('expiry-badge') as HTMLSpanElement;
+
+  const sampleJWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
   function base64UrlDecode(str: string): string {
     const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
     const padded = base64.padEnd(base64.length + (4 - (base64.length % 4)) % 4, '=');
     try {
-      return decodeURIComponent(escape(atob(padded)));
+      const binary = atob(padded);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return new TextDecoder().decode(bytes);
     } catch {
       return atob(padded);
     }
   }
 
+  function updateExpiryBadge(payload: Record<string, unknown>) {
+    const exp = payload.exp;
+    if (!exp) {
+      expiryBadge.textContent = 'No expiry';
+      expiryBadge.className = 'expiry-badge expiry-none';
+      return;
+    }
+    const now = Math.floor(Date.now() / 1000);
+    if (now > (exp as number)) {
+      expiryBadge.textContent = 'Expired';
+      expiryBadge.className = 'expiry-badge expiry-expired';
+    } else {
+      expiryBadge.textContent = 'Valid';
+      expiryBadge.className = 'expiry-badge expiry-valid';
+    }
+  }
+
   function decodeJWT() {
     const raw = input.value.trim();
-    if (!raw) return;
+    if (!raw) { errorEl.textContent = 'Please paste a JWT to decode.'; errorEl.hidden = false; return; }
     errorEl.hidden = true;
     outputSection.hidden = true;
     try {
@@ -59,11 +98,26 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
       headerOutput.textContent = JSON.stringify(header, null, 2);
       payloadOutput.textContent = JSON.stringify(payload, null, 2);
       sigOutput.textContent = parts[2];
+      updateExpiryBadge(payload);
       outputSection.hidden = false;
     } catch (e) {
       errorEl.textContent = 'Invalid JWT: ' + (e as Error).message;
       errorEl.hidden = false;
     }
+  }
+
+  function copyOutput() {
+    const header = headerOutput.textContent;
+    const payload = payloadOutput.textContent;
+    const sig = sigOutput.textContent;
+    if (!header && !payload && !sig) return;
+    const text = `Header:\n${header}\n\nPayload:\n${payload}\n\nSignature:\n${sig}`;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = copyBtn.textContent || '';
+      copyBtn.textContent = 'Copied ✓';
+      copyBtn.classList.add('btn-copied');
+      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
+    }).catch(() => {});
   }
 
   function clearAll() {
@@ -73,13 +127,48 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     headerOutput.textContent = '';
     payloadOutput.textContent = '';
     sigOutput.textContent = '';
+    expiryBadge.textContent = '';
+    expiryBadge.className = 'expiry-badge';
   }
 
-  document.getElementById('btn-decode')!.addEventListener('click', decodeJWT);
-  document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+  function loadSample() {
+    input.value = sampleJWT;
+    clearAll();
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); decodeJWT(); }
+    if (e.key === 'Escape') { clearAll(); }
+  }
+
+  function mount() {
+    input.addEventListener('keydown', handleKeydown);
+    document.getElementById('btn-decode')!.addEventListener('click', decodeJWT);
+    document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+    document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+  }
+
+  function unmount() {
+    input.removeEventListener('keydown', handleKeydown);
+    document.getElementById('btn-copy')!.removeEventListener('click', copyOutput);
+  }
+
+  mount();
+
+  document.addEventListener('astro:before-swap', unmount);
 </script>
 
 <style>
+  .tool-header-row {
+    position: relative;
+  }
+  .try-sample {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    z-index: 1;
+  }
   .input-area {
     width: 100%;
     min-height: 160px;
@@ -105,6 +194,18 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     display: flex;
     gap: var(--spacing-sm);
     margin: var(--spacing-md) 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .shortcut-hint {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+  }
+  @media (min-width: 640px) {
+    .shortcut-hint {
+      margin-left: auto;
+    }
   }
   .error-msg {
     font-family: var(--font-geist-mono);
@@ -125,6 +226,11 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     flex-direction: column;
     gap: var(--spacing-xs);
   }
+  .output-label-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
   .output-label {
     font-family: var(--font-geist-mono);
     font-size: var(--font-size-caption-mono);
@@ -132,12 +238,34 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
+  .expiry-badge {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    padding: 2px 8px;
+    border-radius: var(--border-radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .expiry-valid {
+    background-color: #d3e5ff;
+    color: var(--color-success);
+  }
+  .expiry-expired {
+    background-color: var(--color-error-soft);
+    color: var(--color-error);
+  }
+  .expiry-none {
+    background-color: var(--color-canvas-soft);
+    color: var(--color-mute);
+  }
   .output-area {
     background-color: var(--color-canvas-soft-2);
     border-radius: var(--border-radius-md);
     border: 1px solid #00000014;
-    padding: var(--spacing-md);
-    min-height: 60px;
+    padding: 1rem;
+    min-height: 200px;
+    max-height: 600px;
+    overflow-y: auto;
   }
   .output-content {
     font-family: var(--font-geist-mono);
@@ -145,11 +273,11 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     line-height: 1.5;
     color: var(--color-ink);
     margin: 0;
-    white-space: pre;
-    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
   }
   .sig-area {
-    min-height: 40px;
+    min-height: 200px;
   }
   .sig-content {
     word-break: break-all;

@@ -2,20 +2,34 @@
 import ToolLayout from '../../layouts/ToolLayout.astro';
 ---
 
-<ToolLayout title="Base64 Encoder &amp; Decoder" description="Encode and decode Base64 strings.">
-  <textarea id="input" class="input-area" placeholder="Enter text to encode or decode..." spellcheck="false"></textarea>
+<ToolLayout
+  title="Base64 Encoder &amp; Decoder"
+  description="Free online Base64 encoder and decoder — encode and decode Base64 strings instantly. Fast, private, client-side Base64 conversion tool."
+  keywords="base64 encoder, base64 decoder, base64 encode, base64 decode, base64 converter, online base64 encoder, free base64 decoder, base64 tool"
+>
+  <div class="tool-header-row">
+    <label for="input" class="sr-only">Text input</label>
+    <textarea id="input" class="input-area" placeholder="Enter text to encode or decode..." spellcheck="false" autofocus></textarea>
+    <button class="btn-secondary-sm try-sample" id="btn-sample">Try sample</button>
+  </div>
 
   <div class="button-row">
     <button class="btn-primary" id="btn-encode">Encode</button>
     <button class="btn-secondary" id="btn-decode">Decode</button>
     <button class="btn-secondary" id="btn-copy">Copy</button>
     <button class="btn-secondary" id="btn-clear">Clear</button>
+    <span class="shortcut-hint" aria-live="polite">Ctrl+Enter to encode</span>
   </div>
 
-  <div id="error" class="error-msg" hidden></div>
+  <label class="urlsafe-label">
+    <input type="checkbox" id="urlsafe" class="urlsafe-checkbox" />
+    URL-safe mode
+  </label>
+
+  <div id="error" class="error-msg" role="alert" hidden></div>
 
   <div class="output-area">
-    <pre id="output" class="output-content" aria-label="Base64 result"></pre>
+    <pre id="output" class="output-content" aria-label="Base64 result" data-placeholder="Encoded or decoded result will appear here..."></pre>
   </div>
 </ToolLayout>
 
@@ -23,29 +37,48 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   const input = document.getElementById('input') as HTMLTextAreaElement;
   const output = document.getElementById('output') as HTMLPreElement;
   const errorEl = document.getElementById('error') as HTMLDivElement;
+  const urlsafe = document.getElementById('urlsafe') as HTMLInputElement;
+  const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
+
+  function toUrlSafe(s: string): string {
+    return s.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function fromUrlSafe(s: string): string {
+    let raw = s.replace(/-/g, '+').replace(/_/g, '/');
+    while (raw.length % 4) raw += '=';
+    return raw;
+  }
 
   function encode(str: string): string {
-    return btoa(unescape(encodeURIComponent(str)));
+    const bytes = new TextEncoder().encode(str);
+    const binary = String.fromCharCode(...bytes);
+    const b64 = btoa(binary);
+    return urlsafe.checked ? toUrlSafe(b64) : b64;
   }
 
   function decode(str: string): string | null {
+    const raw = urlsafe.checked ? fromUrlSafe(str.trim()) : str.trim();
     try {
-      return decodeURIComponent(escape(atob(str.trim())));
-    } catch (e) {
+      const binary = atob(raw);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return new TextDecoder().decode(bytes);
+    } catch {
       return null;
     }
   }
 
   function doEncode() {
     const raw = input.value;
-    if (!raw) return;
+    if (!raw) { errorEl.textContent = 'Please enter text to encode.'; errorEl.hidden = false; output.textContent = ''; return; }
     errorEl.hidden = true;
     output.textContent = encode(raw);
   }
 
   function doDecode() {
     const raw = input.value;
-    if (!raw) return;
+    if (!raw) { errorEl.textContent = 'Please enter Base64 to decode.'; errorEl.hidden = false; output.textContent = ''; return; }
     errorEl.hidden = true;
     const result = decode(raw);
     if (result === null) {
@@ -60,7 +93,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   function copyOutput() {
     const text = output.textContent;
     if (!text) return;
-    navigator.clipboard.writeText(text).catch(() => {});
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = copyBtn.textContent || '';
+      copyBtn.textContent = 'Copied ✓';
+      copyBtn.classList.add('btn-copied');
+      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
+    }).catch(() => {});
   }
 
   function clearAll() {
@@ -69,13 +107,45 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     errorEl.hidden = true;
   }
 
-  document.getElementById('btn-encode')!.addEventListener('click', doEncode);
-  document.getElementById('btn-decode')!.addEventListener('click', doDecode);
-  document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
-  document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+  function loadSample() {
+    input.value = 'Hello, Tooliva!';
+    output.textContent = '';
+    errorEl.hidden = true;
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doEncode(); }
+    if (e.key === 'Escape') { clearAll(); }
+  }
+
+  function mount() {
+    input.addEventListener('keydown', handleKeydown);
+    document.getElementById('btn-encode')!.addEventListener('click', doEncode);
+    document.getElementById('btn-decode')!.addEventListener('click', doDecode);
+    document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+    document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+  }
+
+  function unmount() {
+    input.removeEventListener('keydown', handleKeydown);
+  }
+
+  mount();
+
+  document.addEventListener('astro:before-swap', unmount);
 </script>
 
 <style>
+  .tool-header-row {
+    position: relative;
+  }
+  .try-sample {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    z-index: 1;
+  }
   .input-area {
     width: 100%;
     min-height: 200px;
@@ -100,8 +170,34 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   .button-row {
     display: flex;
     gap: var(--spacing-sm);
-    margin: var(--spacing-md) 0;
+    margin: var(--spacing-md) 0 var(--spacing-sm);
+    align-items: center;
     flex-wrap: wrap;
+  }
+  .shortcut-hint {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+  }
+  @media (min-width: 640px) {
+    .shortcut-hint {
+      margin-left: auto;
+    }
+  }
+  .urlsafe-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-body);
+    cursor: pointer;
+    margin-bottom: var(--spacing-md);
+  }
+  .urlsafe-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
   }
   .error-msg {
     font-family: var(--font-geist-mono);
@@ -116,8 +212,10 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     background-color: var(--color-canvas-soft-2);
     border-radius: var(--border-radius-md);
     border: 1px solid #00000014;
-    padding: var(--spacing-md);
-    min-height: 80px;
+    padding: 1rem;
+    min-height: 200px;
+    max-height: 600px;
+    overflow-y: auto;
   }
   .output-content {
     font-family: var(--font-geist-mono);
@@ -127,6 +225,5 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     margin: 0;
     white-space: pre-wrap;
     word-break: break-all;
-    overflow-x: auto;
   }
 </style>

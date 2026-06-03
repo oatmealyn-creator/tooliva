@@ -2,25 +2,42 @@
 import ToolLayout from '../../layouts/ToolLayout.astro';
 ---
 
-<ToolLayout title="UUID Generator" description="Generate random UUIDs in bulk.">
+<ToolLayout
+  title="UUID Generator"
+  description="Free online UUID generator — generate random UUID v4 identifiers instantly. Bulk generate UUIDs with a fast, client-side tool."
+  keywords="uuid generator, uuid v4, uuid generator online, generate uuid, bulk uuid generator, free uuid generator, random uuid, unique id generator"
+>
   <div class="control-row">
     <label class="count-label" for="count">Count</label>
     <input id="count" class="count-input" type="number" value="5" min="1" max="100" />
+
+    <label class="version-label" for="version">Version</label>
+    <select id="version" class="version-select">
+      <option value="v4">v4 (random)</option>
+      <option value="v1">v1 (time)</option>
+    </select>
+
     <button class="btn-primary" id="btn-generate">Generate</button>
-    <button class="btn-secondary" id="btn-copy">Copy</button>
+    <button class="btn-secondary" id="btn-copy" aria-label="Copy generated UUIDs">Copy</button>
     <button class="btn-secondary" id="btn-clear">Clear</button>
+    <span class="shortcut-hint" aria-live="polite">Ctrl+Enter to generate</span>
   </div>
 
+  <div id="warning" class="warning-msg" role="alert" hidden></div>
+
   <div class="output-area">
-    <pre id="output" class="output-content" aria-label="Generated UUIDs"></pre>
+    <pre id="output" class="output-content" aria-label="Generated UUIDs" data-placeholder="Generated UUIDs will appear here..."></pre>
   </div>
 </ToolLayout>
 
 <script>
   const countInput = document.getElementById('count') as HTMLInputElement;
+  const versionSelect = document.getElementById('version') as HTMLSelectElement;
   const output = document.getElementById('output') as HTMLPreElement;
+  const warningEl = document.getElementById('warning') as HTMLDivElement;
+  const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
 
-  function generateUUID(): string {
+  function generateV4(): string {
     if (crypto.randomUUID) return crypto.randomUUID();
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
       const r = Math.random() * 16 | 0;
@@ -28,29 +45,76 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     });
   }
 
+  function generateV1(offset = 0n): string {
+    const UUID_EPOCH = BigInt('0x01b21dd213814000');
+    const ts = BigInt(Date.now()) * BigInt(10000) + UUID_EPOCH + offset;
+
+    const timeLow = Number(ts & BigInt(0xffffffff)).toString(16).padStart(8, '0');
+    const timeMid = Number((ts >> BigInt(32)) & BigInt(0xffff)).toString(16).padStart(4, '0');
+    const timeHi = Number((ts >> BigInt(48)) & BigInt(0x0fff)).toString(16).padStart(3, '0');
+
+    const clock = Math.floor(Math.random() * 16384);
+    const clockHex = ((clock | 0x8000) >>> 0).toString(16).padStart(4, '0');
+
+    const node = new Uint8Array(6);
+    crypto.getRandomValues(node);
+    node[0] |= 0x01;
+    const nodeHex = Array.from(node).map(b => b.toString(16).padStart(2, '0')).join('');
+
+    return timeLow + '-' + timeMid + '-1' + timeHi + '-' + clockHex.slice(0, 2) + clockHex.slice(2) + '-' + nodeHex;
+  }
+
   function generate() {
-    const n = Math.min(Math.max(parseInt(countInput.value, 10) || 1, 1), 100);
+    warningEl.hidden = true;
+    let n = parseInt(countInput.value, 10);
+    if (isNaN(n) || n < 1) { n = 1; warningEl.textContent = 'Count too low — set to 1.'; warningEl.hidden = false; }
+    if (n > 100) { n = 100; warningEl.textContent = 'Count too high — set to 100.'; warningEl.hidden = false; }
+    countInput.value = String(n);
+
+    const fn = versionSelect.value === 'v1'
+      ? (i: number) => generateV1(BigInt(i) * 1000n)
+      : generateV4;
     const uuids: string[] = [];
-    for (let i = 0; i < n; i++) {
-      uuids.push(generateUUID());
-    }
+    for (let i = 0; i < n; i++) uuids.push(fn(i));
     output.textContent = uuids.join('\n');
   }
 
   function copyOutput() {
     const text = output.textContent;
     if (!text) return;
-    navigator.clipboard.writeText(text).catch(() => {});
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = copyBtn.textContent || '';
+      copyBtn.textContent = 'Copied ✓';
+      copyBtn.classList.add('btn-copied');
+      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
+    }).catch(() => {});
   }
 
   function clearAll() {
     output.textContent = '';
     countInput.value = '5';
+    warningEl.hidden = true;
   }
 
-  document.getElementById('btn-generate')!.addEventListener('click', generate);
-  document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
-  document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+  function handleKeydown(e: KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); generate(); }
+    if (e.key === 'Escape') { clearAll(); }
+  }
+
+  function mount() {
+    document.addEventListener('keydown', handleKeydown);
+    document.getElementById('btn-generate')!.addEventListener('click', generate);
+    document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+  }
+
+  function unmount() {
+    document.removeEventListener('keydown', handleKeydown);
+  }
+
+  mount();
+
+  document.addEventListener('astro:before-swap', unmount);
 </script>
 
 <style>
@@ -61,7 +125,7 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     margin-bottom: var(--spacing-md);
     flex-wrap: wrap;
   }
-  .count-label {
+  .count-label, .version-label {
     font-size: var(--font-size-body-sm);
     font-weight: 500;
     color: var(--color-ink);
@@ -82,12 +146,47 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
+  .version-select {
+    padding: 6px 12px;
+    font-family: var(--font-geist);
+    font-size: var(--font-size-body-sm);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+  }
+  .version-select:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .shortcut-hint {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+  }
+  @media (min-width: 640px) {
+    .shortcut-hint {
+      margin-left: auto;
+    }
+  }
+  .warning-msg {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-warning-deep);
+    background-color: var(--color-warning-soft);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-md);
+  }
   .output-area {
     background-color: var(--color-canvas-soft-2);
     border-radius: var(--border-radius-md);
     border: 1px solid #00000014;
-    padding: var(--spacing-md);
+    padding: 1rem;
     min-height: 200px;
+    max-height: 600px;
+    overflow-y: auto;
   }
   .output-content {
     font-family: var(--font-geist-mono);
@@ -95,7 +194,7 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     line-height: 1.6;
     color: var(--color-ink);
     margin: 0;
-    white-space: pre;
-    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
   }
 </style>

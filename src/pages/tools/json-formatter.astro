@@ -2,20 +2,29 @@
 import ToolLayout from '../../layouts/ToolLayout.astro';
 ---
 
-<ToolLayout title="JSON Formatter" description="Format, validate &amp; beautify JSON instantly.">
-  <textarea id="input" class="input-area" placeholder="Paste your JSON here..." spellcheck="false"></textarea>
+<ToolLayout
+  title="JSON Formatter"
+  description="Free online JSON formatter — format, validate, beautify, and pretty print JSON instantly. The best JSON formatter online with privacy-first client-side processing."
+  keywords="json formatter, json formatter online, best json formatter, pretty json formatter, free online json formatter, json beautifier, json prettifier, json validator, json parser, json lint, json checker, format json online, validate json"
+>
+  <div class="tool-header-row">
+    <label for="input" class="sr-only">JSON input</label>
+    <textarea id="input" class="input-area" placeholder='Paste your JSON here, e.g. {"key": "value"}' spellcheck="false" autofocus></textarea>
+    <button class="btn-secondary-sm try-sample" id="btn-sample">Try sample</button>
+  </div>
 
   <div class="button-row">
     <button class="btn-primary" id="btn-format">Format</button>
     <button class="btn-secondary" id="btn-minify">Minify</button>
     <button class="btn-secondary" id="btn-copy">Copy</button>
     <button class="btn-secondary" id="btn-clear">Clear</button>
+    <span class="shortcut-hint" aria-live="polite">Ctrl+Enter to format</span>
   </div>
 
-  <div id="error" class="error-msg" hidden></div>
+  <div id="error" class="error-msg" role="alert" hidden></div>
 
   <div class="output-area">
-    <pre id="output" class="output-content" aria-label="Formatted JSON output"></pre>
+    <pre id="output" class="output-content" aria-label="Formatted JSON output" data-placeholder="Formatted JSON will appear here..."></pre>
   </div>
 </ToolLayout>
 
@@ -23,39 +32,53 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   const input = document.getElementById('input') as HTMLTextAreaElement;
   const output = document.getElementById('output') as HTMLPreElement;
   const errorEl = document.getElementById('error') as HTMLDivElement;
+  const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
+
+  const sample = JSON.stringify({ name: "Tooliva", version: "1.0", features: ["JSON Formatter", "JWT Decoder", "Base64"], active: true }, null, 2);
+
+  function flashCopy(btn: HTMLButtonElement) {
+    const orig = btn.textContent || '';
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('btn-copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('btn-copied'); }, 1500);
+  }
+
+  function showError(msg: string) {
+    errorEl.textContent = msg;
+    errorEl.hidden = false;
+    output.textContent = '';
+  }
 
   function formatJSON() {
     const raw = input.value.trim();
-    if (!raw) return;
+    if (!raw) { showError('Please enter JSON to format.'); return; }
     try {
       const parsed = JSON.parse(raw);
       output.textContent = JSON.stringify(parsed, null, 2);
+      output.classList.remove('minified');
       errorEl.hidden = true;
     } catch (e) {
-      output.textContent = '';
-      errorEl.textContent = 'Invalid JSON: ' + (e as Error).message;
-      errorEl.hidden = false;
+      showError('Invalid JSON: ' + (e as Error).message);
     }
   }
 
   function minifyJSON() {
     const raw = input.value.trim();
-    if (!raw) return;
+    if (!raw) { showError('Please enter JSON to minify.'); return; }
     try {
       const parsed = JSON.parse(raw);
       output.textContent = JSON.stringify(parsed);
+      output.classList.add('minified');
       errorEl.hidden = true;
     } catch (e) {
-      output.textContent = '';
-      errorEl.textContent = 'Invalid JSON: ' + (e as Error).message;
-      errorEl.hidden = false;
+      showError('Invalid JSON: ' + (e as Error).message);
     }
   }
 
   function copyOutput() {
     const text = output.textContent;
     if (!text) return;
-    navigator.clipboard.writeText(text).catch(() => {});
+    navigator.clipboard.writeText(text).then(() => flashCopy(copyBtn)).catch(() => {});
   }
 
   function clearAll() {
@@ -64,13 +87,53 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     errorEl.hidden = true;
   }
 
-  document.getElementById('btn-format')!.addEventListener('click', formatJSON);
-  document.getElementById('btn-minify')!.addEventListener('click', minifyJSON);
-  document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
-  document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+  function loadSample() {
+    input.value = sample;
+    output.textContent = '';
+    errorEl.hidden = true;
+  }
+
+  function handleInput() {
+    if (!errorEl.hidden) {
+      try { JSON.parse(input.value); errorEl.hidden = true; } catch {}
+    }
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); formatJSON(); }
+    if (e.key === 'Escape') { clearAll(); }
+  }
+
+  function mount() {
+    input.addEventListener('input', handleInput);
+    input.addEventListener('keydown', handleKeydown);
+    document.getElementById('btn-format')!.addEventListener('click', formatJSON);
+    document.getElementById('btn-minify')!.addEventListener('click', minifyJSON);
+    document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+    document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+  }
+
+  function unmount() {
+    input.removeEventListener('input', handleInput);
+    input.removeEventListener('keydown', handleKeydown);
+  }
+
+  mount();
+
+  document.addEventListener('astro:before-swap', unmount);
 </script>
 
 <style>
+  .tool-header-row {
+    position: relative;
+  }
+  .try-sample {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    z-index: 1;
+  }
   .input-area {
     width: 100%;
     min-height: 280px;
@@ -92,13 +155,23 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   .input-area::placeholder {
     color: var(--color-mute);
   }
-
   .button-row {
     display: flex;
     gap: var(--spacing-sm);
     margin: var(--spacing-md) 0;
+    align-items: center;
+    flex-wrap: wrap;
   }
-
+  .shortcut-hint {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+  }
+  @media (min-width: 640px) {
+    .shortcut-hint {
+      margin-left: auto;
+    }
+  }
   .error-msg {
     font-family: var(--font-geist-mono);
     font-size: var(--font-size-body-sm);
@@ -108,15 +181,15 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     border-radius: var(--border-radius-sm);
     margin-bottom: var(--spacing-md);
   }
-
   .output-area {
     background-color: var(--color-canvas-soft-2);
     border-radius: var(--border-radius-md);
     border: 1px solid #00000014;
-    padding: var(--spacing-md);
-    min-height: 120px;
+    padding: 1rem;
+    min-height: 200px;
+    max-height: 500px;
+    overflow-y: auto;
   }
-
   .output-content {
     font-family: var(--font-geist-mono);
     font-size: var(--font-size-code);
@@ -125,5 +198,10 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     margin: 0;
     white-space: pre;
     overflow-x: auto;
+  }
+  .output-content.minified {
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-x: hidden;
   }
 </style>

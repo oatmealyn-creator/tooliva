@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://tooliva.pages.dev/sitemap-index.xml
