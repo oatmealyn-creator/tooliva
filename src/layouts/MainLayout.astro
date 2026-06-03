@@ -22,6 +22,13 @@ const pageUrl = Astro.url.href;
 
 <html lang="en" class="scroll-smooth">
   <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DXG3JPJZB2"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-DXG3JPJZB2');
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
