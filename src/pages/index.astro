@@ -1,11 +1,23 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Nav from '../components/Nav.astro';
+import Layout from '../layouts/MainLayout.astro';
 ---
 
 <Layout>
-	<Welcome />
+  <Nav />
+
+  <section class="hero-band">
+    <div class="mesh-gradient" aria-hidden="true" />
+    <div class="hero-content">
+      <span class="badge-secondary">Tools &middot; Utility &middot; Speed</span>
+      <h1 class="hero-title">Developer tools, done right.</h1>
+      <p class="hero-subtitle">
+        The tools you Google &mdash; but fast, clean, and ad-free.
+      </p>
+      <div class="hero-cta">
+        <button class="btn-primary">Get Started</button>
+        <button class="btn-secondary">Learn More</button>
+      </div>
+    </div>
+  </section>
 </Layout>
