@@ -11,14 +11,16 @@ export interface Props {
   ogImage?: string;
 }
 
+const SITE_URL = 'https://tooliva.vercel.app';
+
 const {
   pageTitle = 'Tooliva — Free Online Developer Tools | JSON Formatter, JWT Decoder & More',
   pageDescription = 'Free online developer tools — JSON formatter, JWT decoder, Base64 encoder, UUID generator, and cron builder. Fast, clean, and privacy-focused utilities for developers.',
   pageKeywords = 'json formatter, json formatter online, best json formatter, pretty json formatter, free online json formatter, jwt decoder, jwt decoder online, developer tools, online developer utilities, free developer tools',
-  ogImage = 'https://tooliva-swart.vercel.app/og-image.svg',
+  ogImage = `${SITE_URL}/og-image.svg`,
 } = Astro.props;
 
-const pageUrl = Astro.url.href;
+const pageUrl = `${SITE_URL}${Astro.url.pathname}`;
 ---
 
 <html lang="en" class="scroll-smooth">
@@ -62,24 +64,24 @@ const pageUrl = Astro.url.href;
       "@graph": [
         {
           "@type": "Organization",
-          "@id": "https://tooliva-swart.vercel.app/#organization",
+          "@id": `${SITE_URL}/#organization`,
           "name": "Tooliva",
-          "url": "https://tooliva-swart.vercel.app/",
+          "url": SITE_URL,
           "description": "Free online developer tools and utilities.",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://tooliva-swart.vercel.app/og-image.svg",
+            "url": `${SITE_URL}/og-image.svg`,
             "width": 1200,
             "height": 630
           }
         },
         {
           "@type": "WebSite",
-          "@id": "https://tooliva-swart.vercel.app/#website",
-          "url": "https://tooliva-swart.vercel.app/",
+          "@id": `${SITE_URL}/#website`,
+          "url": SITE_URL,
           "name": "Tooliva",
           "description": "Free online developer tools — JSON formatter, JWT decoder, Base64 encoder, UUID generator, and cron builder.",
-          "publisher": { "@id": "https://tooliva-swart.vercel.app/#organization" },
+          "publisher": { "@id": `${SITE_URL}/#organization` },
           "inLanguage": "en-US"
         }
       ]

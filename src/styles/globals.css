@@ -220,6 +220,9 @@
 /* ─── Nav ─── */
 
 .nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background-color: transparent;
   color: var(--color-ink);
   height: 64px;
