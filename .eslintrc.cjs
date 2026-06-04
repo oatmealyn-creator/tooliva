@@ -8,7 +8,7 @@ module.exports = {
   plugins: ['@typescript-eslint', 'prettier'],
   overrides: [
     {
-      files: ['*.astro'],
+      files: ['**/*.astro'],
       processor: 'astro/astro',
       parser: 'astro-eslint-parser',
       parserOptions: {
