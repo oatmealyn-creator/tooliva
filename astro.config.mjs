@@ -9,6 +9,6 @@ export default defineConfig({
   output: 'static',
   integrations: [sitemap()],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss({ resolveOptions: { tsconfigPaths: true } })],
   },
 });
