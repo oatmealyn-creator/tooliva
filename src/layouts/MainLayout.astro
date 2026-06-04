@@ -27,11 +27,13 @@ const pageUrl = `${SITE_URL}${Astro.url.pathname}`;
   <head>
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-DXG3JPJZB2"></script>
     <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-DXG3JPJZB2');
-    </script>
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+  dataLayer.push(arguments);
+}
+gtag('js', new Date());
+gtag('config', 'G-DXG3JPJZB2');
+</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
@@ -98,14 +100,17 @@ const pageUrl = `${SITE_URL}${Astro.url.pathname}`;
 
 <script>
   function initFadeIn() {
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
         }
-      }
-    }, { threshold: 0.1 });
+      },
+      { threshold: 0.1 }
+  );
     document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
   }
 

@@ -1,11 +1,12 @@
 module.exports = [
   // Ignore build and deps
-  { ignores: ['dist/', 'node_modules/', 'public/'] },
+  { ignores: ['dist/', 'node_modules/', 'public/', '.astro/'] },
 
   // Base rules (JS/TS)
   {
     files: ['**/*.{js,ts,jsx,tsx}'],
     languageOptions: {
+      parser: require('@typescript-eslint/parser'),
       parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
     },
     plugins: {
@@ -23,9 +24,9 @@ module.exports = [
     files: ['**/*.astro'],
     processor: 'astro/astro',
     languageOptions: {
-      parser: require.resolve('astro-eslint-parser'),
+      parser: require('astro-eslint-parser'),
       parserOptions: {
-        parser: require.resolve('@typescript-eslint/parser'),
+        parser: require('@typescript-eslint/parser'),
       },
     },
     plugins: {
