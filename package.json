@@ -18,14 +18,16 @@
     "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource/geist-mono": "^5.2.8",
-    "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@tailwindcss/postcss": "^4.3.0",
+    "@tailwindcss/vite": "^4.3.0",
     "@typescript-eslint/eslint-plugin": "^8.60.1",
     "@typescript-eslint/parser": "^8.60.1",
     "astro-eslint-parser": "^1.4.0",
+    "autoprefixer": "^10.5.0",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^1.7.0",
