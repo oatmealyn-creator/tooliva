@@ -2,6 +2,7 @@
 import '@fontsource-variable/geist';
 import '@fontsource/geist-mono';
 import '../styles/globals.css';
+import Nav from '../components/Nav.astro';
 
 export interface Props {
   pageTitle?: string;
@@ -22,7 +23,7 @@ const pageUrl = Astro.url.href;
 
 <html lang="en" class="scroll-smooth">
   <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DXG3JPJZB2"></script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-DXG3JPJZB2"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -86,6 +87,7 @@ const pageUrl = Astro.url.href;
     <slot name="head" />
   </head>
   <body>
+    <Nav />
     <main class="page-wrap">
       <slot />
     </main>

@@ -27,9 +27,7 @@ import { tools } from '../data/tools';
       <span class="badge-pill">
         <span class="pill-static">Tools &middot; Utility &middot;</span>
         <span class="pill-rotating-wrap" id="rotating-wrap">
-          <span class="pill-rotating" id="rotating-text">
-            <span>Speed</span>
-          </span>
+          <span class="pill-rotating" id="rotating-text"></span>
         </span>
         <span class="pill-tag">&lt;Utility /&gt;</span>
       </span>
@@ -165,8 +163,7 @@ import { tools } from '../data/tools';
 
 <script>
   const words = ['Speed', 'Formatting', 'JSON', 'Security', 'Encoding', 'UUIDs'];
-  const el = document.getElementById('rotating-text');
-  const wrap = document.getElementById('rotating-wrap');
+  const el = document.getElementById('rotating-text')!;
   let index = 0;
 
   function cycleWord() {

@@ -62,6 +62,8 @@
   --font-weight-caption: 400;
   --font-weight-caption-mono: 400;
   --font-weight-code: 400;
+  --font-size-button-md: 14px;
+  --font-size-button-lg: 16px;
   --font-weight-button-md: 500;
   --font-weight-button-lg: 500;
 
@@ -731,7 +733,7 @@
 .fade-in .tools-grid .tool-card {
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.2s ease;
 }
 
 .fade-in.visible .tools-grid .tool-card {
