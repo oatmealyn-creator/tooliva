@@ -100,7 +100,16 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   function randomize() {
     color1.value = randomHex();
     color2.value = randomHex();
-    const dirs = ['to bottom', 'to top', 'to right', 'to left', 'to bottom right', 'to bottom left', '135deg', '45deg'];
+    const dirs = [
+      'to bottom',
+      'to top',
+      'to right',
+      'to left',
+      'to bottom right',
+      'to bottom left',
+      '135deg',
+      '45deg',
+    ];
     directionSelect.value = dirs[Math.floor(Math.random() * dirs.length)];
     render();
   }
@@ -113,8 +122,14 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     directionSelect.addEventListener('change', render);
     color1.addEventListener('input', render);
     color2.addEventListener('input', render);
-    hex1.addEventListener('input', () => { color1.value = hex1.value; render(); });
-    hex2.addEventListener('input', () => { color2.value = hex2.value; render(); });
+    hex1.addEventListener('input', () => {
+      color1.value = hex1.value;
+      render();
+    });
+    hex2.addEventListener('input', () => {
+      color2.value = hex2.value;
+      render();
+    });
     document.getElementById('btn-copy-css')!.addEventListener('click', copyCSS);
     document.getElementById('btn-random')!.addEventListener('click', randomize);
     render();
@@ -123,20 +138,102 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 </script>
 
 <style>
-  .gradient-controls { display: flex; flex-direction: column; gap: var(--spacing-md); margin-bottom: var(--spacing-md); }
-  .field-row { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .field-label { font-size: var(--font-size-body-sm); font-weight: 500; color: var(--color-ink); }
-  .field-select { padding: 10px 12px; font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); cursor: pointer; }
-  .field-select:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .color-stops { margin-top: var(--spacing-sm); }
-  .color-stop-row { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; }
-  .color-picker { width: 44px; height: 44px; border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); cursor: pointer; padding: 0; background: none; }
-  .color-hex { width: 100px; padding: 8px 12px; font-family: var(--font-geist-mono); font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); }
-  .color-hex:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .stop-sep { color: var(--color-mute); font-size: var(--font-size-body-sm); }
-  .preview-area { width: 100%; height: 200px; border-radius: var(--border-radius-md); border: 1px solid var(--color-hairline); margin-bottom: var(--spacing-md); }
-  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
-  .css-output-area { margin-top: var(--spacing-md); }
-  .css-code { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: var(--spacing-md); font-size: var(--font-size-code); line-height: 1.5; color: var(--color-ink); white-space: pre-wrap; word-break: break-all; min-height: 50px; margin: var(--spacing-xs) 0 0; }
-  .monospace { font-family: var(--font-geist-mono); }
+  .gradient-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+  .field-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .field-label {
+    font-size: var(--font-size-body-sm);
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .field-select {
+    padding: 10px 12px;
+    font-size: var(--font-size-body-md);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+  }
+  .field-select:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .color-stops {
+    margin-top: var(--spacing-sm);
+  }
+  .color-stop-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+  .color-picker {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    padding: 0;
+    background: none;
+  }
+  .color-hex {
+    width: 100px;
+    padding: 8px 12px;
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-md);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+  }
+  .color-hex:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .stop-sep {
+    color: var(--color-mute);
+    font-size: var(--font-size-body-sm);
+  }
+  .preview-area {
+    width: 100%;
+    height: 200px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-hairline);
+    margin-bottom: var(--spacing-md);
+  }
+  .button-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .css-output-area {
+    margin-top: var(--spacing-md);
+  }
+  .css-code {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-code);
+    line-height: 1.5;
+    color: var(--color-ink);
+    white-space: pre-wrap;
+    word-break: break-all;
+    min-height: 50px;
+    margin: var(--spacing-xs) 0 0;
+  }
+  .monospace {
+    font-family: var(--font-geist-mono);
+  }
 </style>

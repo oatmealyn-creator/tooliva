@@ -9,7 +9,13 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 >
   <div class="field-row">
     <label for="timestamp-input" class="field-label">Unix timestamp</label>
-    <input id="timestamp-input" class="field-input monospace" type="number" placeholder="Enter Unix timestamp (seconds)" value="1717516800" />
+    <input
+      id="timestamp-input"
+      class="field-input monospace"
+      type="number"
+      placeholder="Enter Unix timestamp (seconds)"
+      value="1717516800"
+    />
   </div>
 
   <div class="button-row">
@@ -22,17 +28,31 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   <div id="error" class="error-msg" role="alert" hidden></div>
 
   <div class="date-results" id="date-results" hidden>
-    <div class="result-card"><span class="result-label">UTC</span><code class="result-value" id="utc-value"></code></div>
-    <div class="result-card"><span class="result-label">Local</span><code class="result-value" id="local-value"></code></div>
-    <div class="result-card"><span class="result-label">ISO 8601</span><code class="result-value" id="iso-value"></code></div>
-    <div class="result-card"><span class="result-label">Relative</span><code class="result-value" id="relative-value"></code></div>
+    <div class="result-card">
+      <span class="result-label">UTC</span><code class="result-value" id="utc-value"></code>
+    </div>
+    <div class="result-card">
+      <span class="result-label">Local</span><code class="result-value" id="local-value"></code>
+    </div>
+    <div class="result-card">
+      <span class="result-label">ISO 8601</span><code class="result-value" id="iso-value"></code>
+    </div>
+    <div class="result-card">
+      <span class="result-label">Relative</span><code class="result-value" id="relative-value"
+      ></code>
+    </div>
   </div>
 
   <hr class="section-divider" />
 
   <div class="field-row">
     <label for="date-input" class="field-label">Date string</label>
-    <input id="date-input" class="field-input" placeholder="Enter a date string (e.g. 2024-06-04 or now)" value="2024-06-04T12:00:00Z" />
+    <input
+      id="date-input"
+      class="field-input"
+      placeholder="Enter a date string (e.g. 2024-06-04 or now)"
+      value="2024-06-04T12:00:00Z"
+    />
   </div>
 
   <div class="button-row">
@@ -40,8 +60,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   </div>
 
   <div class="date-results" id="ts-results" hidden>
-    <div class="result-card"><span class="result-label">Seconds</span><code class="result-value" id="seconds-value"></code></div>
-    <div class="result-card"><span class="result-label">Milliseconds</span><code class="result-value" id="ms-value"></code></div>
+    <div class="result-card">
+      <span class="result-label">Seconds</span><code class="result-value" id="seconds-value"></code>
+    </div>
+    <div class="result-card">
+      <span class="result-label">Milliseconds</span><code class="result-value" id="ms-value"></code>
+    </div>
   </div>
 </ToolLayout>
 
@@ -54,12 +78,27 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function doToDate() {
     const raw = tsInput.value.trim();
-    if (!raw) { errorEl.textContent = 'Please enter a timestamp.'; errorEl.hidden = false; dateResults.hidden = true; return; }
+    if (!raw) {
+      errorEl.textContent = 'Please enter a timestamp.';
+      errorEl.hidden = false;
+      dateResults.hidden = true;
+      return;
+    }
     errorEl.hidden = true;
     const ts = parseInt(raw, 10);
-    if (isNaN(ts)) { errorEl.textContent = 'Invalid timestamp.'; errorEl.hidden = false; dateResults.hidden = true; return; }
+    if (isNaN(ts)) {
+      errorEl.textContent = 'Invalid timestamp.';
+      errorEl.hidden = false;
+      dateResults.hidden = true;
+      return;
+    }
     const d = new Date(ts * 1000);
-    if (isNaN(d.getTime())) { errorEl.textContent = 'Invalid date.'; errorEl.hidden = false; dateResults.hidden = true; return; }
+    if (isNaN(d.getTime())) {
+      errorEl.textContent = 'Invalid date.';
+      errorEl.hidden = false;
+      dateResults.hidden = true;
+      return;
+    }
     document.getElementById('utc-value')!.textContent = d.toUTCString();
     document.getElementById('local-value')!.textContent = d.toLocaleString();
     document.getElementById('iso-value')!.textContent = d.toISOString();
@@ -83,10 +122,20 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function doToTimestamp() {
     const raw = dateInput.value.trim();
-    if (!raw) { errorEl.textContent = 'Please enter a date string.'; errorEl.hidden = false; tsResults.hidden = true; return; }
+    if (!raw) {
+      errorEl.textContent = 'Please enter a date string.';
+      errorEl.hidden = false;
+      tsResults.hidden = true;
+      return;
+    }
     errorEl.hidden = true;
     const d = new Date(raw);
-    if (isNaN(d.getTime())) { errorEl.textContent = 'Invalid date string.'; errorEl.hidden = false; tsResults.hidden = true; return; }
+    if (isNaN(d.getTime())) {
+      errorEl.textContent = 'Invalid date string.';
+      errorEl.hidden = false;
+      tsResults.hidden = true;
+      return;
+    }
     document.getElementById('seconds-value')!.textContent = String(Math.floor(d.getTime() / 1000));
     document.getElementById('ms-value')!.textContent = String(d.getTime());
     tsResults.hidden = false;
@@ -107,8 +156,13 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doToDate(); }
-    if (e.key === 'Escape') { clearAll(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      doToDate();
+    }
+    if (e.key === 'Escape') {
+      clearAll();
+    }
   }
 
   function mount() {
@@ -119,22 +173,95 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     document.getElementById('btn-sample')!.addEventListener('click', loadSample);
   }
   mount();
-  document.addEventListener('astro:before-swap', () => tsInput.removeEventListener('keydown', handleKeydown));
+  document.addEventListener('astro:before-swap', () =>
+    tsInput.removeEventListener('keydown', handleKeydown)
+  );
 </script>
 
 <style>
-  .field-row { margin-bottom: var(--spacing-md); display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .field-label { font-size: var(--font-size-body-sm); font-weight: 500; color: var(--color-ink); }
-  .field-input { padding: 10px 12px; font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); box-sizing: border-box; width: 100%; }
-  .field-input.monospace { font-family: var(--font-geist-mono); }
-  .field-input:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
-  .shortcut-hint { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); }
-  @media (min-width: 640px) { .shortcut-hint { margin-left: auto; } }
-  .error-msg { font-family: var(--font-geist-mono); font-size: var(--font-size-body-sm); color: var(--color-error); background-color: var(--color-error-soft); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-md); }
-  .section-divider { border: none; border-top: 1px solid var(--color-hairline); margin: var(--spacing-2xl) 0; }
-  .date-results { display: flex; flex-direction: column; gap: var(--spacing-md); }
-  .result-card { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: var(--spacing-md); }
-  .result-label { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: var(--spacing-xs); }
-  .result-value { font-family: var(--font-geist-mono); font-size: var(--font-size-body-md); color: var(--color-ink); word-break: break-all; }
+  .field-row {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .field-label {
+    font-size: var(--font-size-body-sm);
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .field-input {
+    padding: 10px 12px;
+    font-size: var(--font-size-body-md);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .field-input.monospace {
+    font-family: var(--font-geist-mono);
+  }
+  .field-input:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .button-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .shortcut-hint {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+  }
+  @media (min-width: 640px) {
+    .shortcut-hint {
+      margin-left: auto;
+    }
+  }
+  .error-msg {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-error);
+    background-color: var(--color-error-soft);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--color-hairline);
+    margin: var(--spacing-2xl) 0;
+  }
+  .date-results {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  .result-card {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: var(--spacing-md);
+  }
+  .result-label {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: var(--spacing-xs);
+  }
+  .result-value {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-md);
+    color: var(--color-ink);
+    word-break: break-all;
+  }
 </style>

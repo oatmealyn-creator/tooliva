@@ -11,12 +11,12 @@ import { tools } from '../data/tools';
   pageKeywords="json formatter, json formatter online, jwt decoder, regex tester online, diff checker, hash generator, css minifier, html minifier, base64 encoder, uuid generator, cron builder, color converter, password generator, developer tools online, free developer tools"
 >
   <section class="hero-band">
-    <div class="mesh-gradient" aria-hidden="true" />
-    <div class="grid-pattern" aria-hidden="true" />
-    <div class="grain-overlay" aria-hidden="true" />
+    <div class="mesh-gradient" aria-hidden="true"></div>
+    <div class="grid-pattern" aria-hidden="true"></div>
+    <div class="grain-overlay" aria-hidden="true"></div>
 
     <div class="floating-elements" aria-hidden="true">
-      <span class="float-el el-1">{ }</span>
+      <span class="float-el el-1">&#123;&#125;</span>
       <span class="float-el el-2">[ ]</span>
       <span class="float-el el-3">&lt;/&gt;</span>
       <span class="float-el el-4">=&gt;</span>
@@ -34,9 +34,7 @@ import { tools } from '../data/tools';
       <h1 class="hero-title">
         Developer tools, done <span class="highlight-word">right</span>.
       </h1>
-      <p class="hero-subtitle">
-        The tools you Google &mdash; but fast, clean, and instant.
-      </p>
+      <p class="hero-subtitle">The tools you Google &mdash; but fast, clean, and instant.</p>
       <div class="hero-cta">
         <a href="/tools" class="btn-primary">Get Started</a>
         <a href="/about" class="btn-secondary">Learn More</a>
@@ -47,12 +45,21 @@ import { tools } from '../data/tools';
   <section class="tools-band fade-in">
     <div class="tools-container">
       <h2 class="section-title">Every tool you need.</h2>
-      <p class="section-subtitle">Quick, reliable utilities for developers &mdash; no fuss, just speed.</p>
+      <p class="section-subtitle">
+        Quick, reliable utilities for developers &mdash; no fuss, just speed.
+      </p>
 
       <div class="tools-grid">
-        {tools.map((tool) => (
-          <ToolCard name={tool.name} slug={tool.slug} description={tool.description} category={tool.category} />
-        ))}
+        {
+          tools.map((tool) => (
+            <ToolCard
+              name={tool.name}
+              slug={tool.slug}
+              description={tool.description}
+              category={tool.category}
+            />
+          ))
+        }
       </div>
     </div>
   </section>
@@ -63,32 +70,82 @@ import { tools } from '../data/tools';
 
       <div class="seo-content-grid">
         <article class="seo-content-block">
-          <h3 class="seo-content-heading">JSON Formatter & Code Utilities — Format, Validate & Minify</h3>
+          <h3 class="seo-content-heading">
+            JSON Formatter & Code Utilities — Format, Validate & Minify
+          </h3>
           <p>
-            Working with JSON data is a daily necessity for modern developers. Tooliva offers the best free <strong>JSON formatter online</strong> — a powerful tool that instantly formats, validates, and beautifies your JSON data with proper indentation. Our <strong>free online JSON formatter</strong> acts as a full <strong>JSON validator</strong> and <strong>JSON parser</strong>, catching syntax errors before they cause problems in your application. Unlike other tools that send your data to a server, everything runs client-side. Your data never leaves your browser.
+            Working with JSON data is a daily necessity for modern developers. Tooliva offers the
+            best free <strong>JSON formatter online</strong> — a powerful tool that instantly formats,
+            validates, and beautifies your JSON data with proper indentation. Our <strong
+              >free online JSON formatter</strong
+            > acts as a full <strong>JSON validator</strong> and <strong>JSON parser</strong>,
+            catching syntax errors before they cause problems in your application. Unlike other
+            tools that send your data to a server, everything runs client-side. Your data never
+            leaves your browser.
           </p>
           <p>
-            Beyond JSON, we provide a complete suite of code utilities. Our <strong>HTML minifier</strong>, <strong>CSS minifier</strong>, and <strong>JavaScript minifier</strong> strip whitespace and comments from your code, reducing file sizes for production. The <strong>SQL formatter</strong> beautifies your database queries, while the <strong>Markdown preview</strong> lets you write and preview rendered HTML side by side. Use our <strong>HTML entity converter</strong> to encode and decode special characters. Whether you need a <strong>JSON beautifier</strong>, <strong>JSON lint</strong> checker, or <strong>JSON viewer</strong>, Tooliva is your one-stop destination for code formatting tools.
+            Beyond JSON, we provide a complete suite of code utilities. Our <strong
+              >HTML minifier</strong
+            >, <strong>CSS minifier</strong>, and <strong>JavaScript minifier</strong> strip whitespace
+            and comments from your code, reducing file sizes for production. The <strong
+              >SQL formatter</strong
+            > beautifies your database queries, while the <strong>Markdown preview</strong> lets you write
+            and preview rendered HTML side by side. Use our <strong>HTML entity converter</strong> to
+            encode and decode special characters. Whether you need a <strong>JSON beautifier</strong
+            >, <strong>JSON lint</strong> checker, or <strong>JSON viewer</strong>, Tooliva is your
+            one-stop destination for code formatting tools.
           </p>
         </article>
 
         <article class="seo-content-block">
-          <h3 class="seo-content-heading">Security & Text Tools — JWT Decoder, Hash Generator & Regex Tester</h3>
+          <h3 class="seo-content-heading">
+            Security & Text Tools — JWT Decoder, Hash Generator & Regex Tester
+          </h3>
           <p>
-            JSON Web Tokens are the backbone of modern authentication. Tooliva's <strong>JWT decoder</strong> instantly parses the header, payload, and signature sections of any RFC 7519 compliant token, presenting the data in a clean, structured format. Unlike many <strong>JWT parser</strong> tools that require server-side processing, our decoder runs entirely in your browser, ensuring sensitive token data never touches a network. It works perfectly as a drop-in replacement for jwt.io when you need a fast, private <strong>JWT decoder online</strong>.
+            JSON Web Tokens are the backbone of modern authentication. Tooliva's <strong
+              >JWT decoder</strong
+            > instantly parses the header, payload, and signature sections of any RFC 7519 compliant token,
+            presenting the data in a clean, structured format. Unlike many <strong
+              >JWT parser</strong
+            > tools that require server-side processing, our decoder runs entirely in your browser, ensuring
+            sensitive token data never touches a network. It works perfectly as a drop-in replacement
+            for jwt.io when you need a fast, private <strong>JWT decoder online</strong>.
           </p>
           <p>
-            Our security toolkit also includes a <strong>hash generator</strong> supporting MD5, SHA-1, SHA-256, and SHA-512 using the Web Crypto API, and a <strong>password generator</strong> that creates strong random passwords with configurable length, character types, and entropy strength indicator. For text processing, the <strong>regex tester</strong> lets you test regular expressions with live matching across multi-line strings, and the <strong>diff checker</strong> compares two texts side by side using an LCS-based algorithm with color-coded additions and removals. The <strong>text replacer</strong> supports find-and-replace with optional regex mode.
+            Our security toolkit also includes a <strong>hash generator</strong> supporting MD5, SHA-1,
+            SHA-256, and SHA-512 using the Web Crypto API, and a <strong>password generator</strong> that
+            creates strong random passwords with configurable length, character types, and entropy strength
+            indicator. For text processing, the <strong>regex tester</strong> lets you test regular expressions
+            with live matching across multi-line strings, and the <strong>diff checker</strong> compares
+            two texts side by side using an LCS-based algorithm with color-coded additions and removals.
+            The <strong>text replacer</strong> supports find-and-replace with optional regex mode.
           </p>
         </article>
 
         <article class="seo-content-block">
           <h3 class="seo-content-heading">Encoding, Conversion & Design Tools for Developers</h3>
           <p>
-            Tooliva offers a comprehensive set of encoding and conversion utilities. Our <strong>Base64 encoder and decoder</strong> lets you encode strings and decode Base64 data instantly, with an optional URL-safe mode. The <strong>URL encoder/decoder</strong> handles percent-encoding for query parameters and full URLs. Generate unique identifiers with our <strong>UUID generator</strong>, supporting v4 (random) and v1 (time-based) with bulk generation up to 100 UUIDs at once. The <strong>JSON to CSV converter</strong> transforms JSON arrays to CSV and back, while the <strong>HTML entity converter</strong> handles both named and numeric character references.
+            Tooliva offers a comprehensive set of encoding and conversion utilities. Our <strong
+              >Base64 encoder and decoder</strong
+            > lets you encode strings and decode Base64 data instantly, with an optional URL-safe mode.
+            The <strong>URL encoder/decoder</strong> handles percent-encoding for query parameters and
+            full URLs. Generate unique identifiers with our <strong>UUID generator</strong>,
+            supporting v4 (random) and v1 (time-based) with bulk generation up to 100 UUIDs at once.
+            The <strong>JSON to CSV converter</strong> transforms JSON arrays to CSV and back, while the
+            <strong>HTML entity converter</strong> handles both named and numeric character references.
           </p>
           <p>
-            For designers and frontend developers, the <strong>color converter</strong> translates between HEX, RGB, and HSL color spaces with a live preview. The <strong>CSS gradient generator</strong> provides a visual builder for linear and radial gradients, outputting ready-to-use CSS code. The <strong>number base converter</strong> converts between binary, octal, decimal, and hexadecimal. Build and understand cron schedules with the <strong>cron builder</strong> — perfect for DevOps engineers managing scheduled tasks. Round out your workflow with the <strong>case converter</strong>, <strong>timestamp converter</strong>, <strong>lorem ipsum generator</strong>, and <strong>word counter</strong>. All tools are free, private, and require no account setup.
+            For designers and frontend developers, the <strong>color converter</strong> translates between
+            HEX, RGB, and HSL color spaces with a live preview. The <strong
+              >CSS gradient generator</strong
+            > provides a visual builder for linear and radial gradients, outputting ready-to-use CSS code.
+            The <strong>number base converter</strong> converts between binary, octal, decimal, and hexadecimal.
+            Build and understand cron schedules with the <strong>cron builder</strong> — perfect for DevOps
+            engineers managing scheduled tasks. Round out your workflow with the <strong
+              >case converter</strong
+            >, <strong>timestamp converter</strong>, <strong>lorem ipsum generator</strong>, and <strong
+              >word counter</strong
+            >. All tools are free, private, and require no account setup.
           </p>
         </article>
       </div>
@@ -100,19 +157,25 @@ import { tools } from '../data/tools';
       <h2 class="section-title">Why Tooliva?</h2>
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon">{ }</div>
+          <div class="feature-icon">&#123;&#125;</div>
           <h3 class="feature-title">Blazing Fast</h3>
-          <p class="feature-text">Tools load instantly and process data in your browser. No server calls, no waiting.</p>
+          <p class="feature-text">
+            Tools load instantly and process data in your browser. No server calls, no waiting.
+          </p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#128274;</div>
           <h3 class="feature-title">Privacy First</h3>
-          <p class="feature-text">Everything runs client-side. Your data never leaves your device. Period.</p>
+          <p class="feature-text">
+            Everything runs client-side. Your data never leaves your device. Period.
+          </p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#9889;</div>
           <h3 class="feature-title">Zero Setup</h3>
-          <p class="feature-text">No accounts, no sign-ups, no subscriptions. Open a tool and use it immediately.</p>
+          <p class="feature-text">
+            No accounts, no sign-ups, no subscriptions. Open a tool and use it immediately.
+          </p>
         </div>
       </div>
     </div>
@@ -124,47 +187,96 @@ import { tools } from '../data/tools';
       <div class="faq-list">
         <article class="faq-item">
           <h3 class="faq-question">Is Tooliva free?</h3>
-          <p class="faq-answer">Yes, every tool is completely free to use. There are no hidden charges, premium tiers, or usage limits. All <strong>free online developer tools</strong> on Tooliva are available to everyone without any cost.</p>
+          <p class="faq-answer">
+            Yes, every tool is completely free to use. There are no hidden charges, premium tiers,
+            or usage limits. All <strong>free online developer tools</strong> on Tooliva are available
+            to everyone without any cost.
+          </p>
         </article>
         <article class="faq-item">
           <h3 class="faq-question">How does the JSON formatter work?</h3>
-          <p class="faq-answer">Our <strong>JSON formatter online</strong> parses and pretty-prints your JSON data entirely in your browser. Paste or type your JSON, and it instantly formats with proper indentation. It also validates your JSON syntax and highlights errors, acting as both a <strong>JSON validator</strong> and <strong>JSON beautifier</strong> in one tool.</p>
+          <p class="faq-answer">
+            Our <strong>JSON formatter online</strong> parses and pretty-prints your JSON data entirely
+            in your browser. Paste or type your JSON, and it instantly formats with proper indentation.
+            It also validates your JSON syntax and highlights errors, acting as both a <strong
+              >JSON validator</strong
+            > and <strong>JSON beautifier</strong> in one tool.
+          </p>
         </article>
         <article class="faq-item">
           <h3 class="faq-question">Is the JWT decoder safe to use with real tokens?</h3>
-          <p class="faq-answer">Absolutely. The <strong>JWT decoder online</strong> runs entirely client-side. Your token never leaves your browser, so sensitive authentication data stays private. Use it confidently as your go-to <strong>JWT token decoder</strong> for debugging production tokens.</p>
+          <p class="faq-answer">
+            Absolutely. The <strong>JWT decoder online</strong> runs entirely client-side. Your token
+            never leaves your browser, so sensitive authentication data stays private. Use it confidently
+            as your go-to <strong>JWT token decoder</strong> for debugging production tokens.
+          </p>
         </article>
         <article class="faq-item">
           <h3 class="faq-question">Do I need an account?</h3>
-          <p class="faq-answer">No. Just open a tool and start using it. There is no registration, no email sign-up, and no data collection. That's what makes Tooliva the <strong>best JSON formatter</strong> and developer tools platform for privacy-conscious users.</p>
+          <p class="faq-answer">
+            No. Just open a tool and start using it. There is no registration, no email sign-up, and
+            no data collection. That's what makes Tooliva the <strong>best JSON formatter</strong> and
+            developer tools platform for privacy-conscious users.
+          </p>
         </article>
         <article class="faq-item">
           <h3 class="faq-question">Is my data safe?</h3>
-          <p class="faq-answer">Yes. All tools run in your browser using client-side JavaScript. Your data never leaves your device. We don't store, log, or transmit any information you paste into our tools.</p>
+          <p class="faq-answer">
+            Yes. All tools run in your browser using client-side JavaScript. Your data never leaves
+            your device. We don't store, log, or transmit any information you paste into our tools.
+          </p>
         </article>
         <article class="faq-item">
           <h3 class="faq-question">Can I use these tools offline?</h3>
-          <p class="faq-answer">Once a tool page loads, it works without an internet connection. All processing is done locally in your browser, making our <strong>pretty JSON formatter</strong> and other utilities fully functional offline.</p>
+          <p class="faq-answer">
+            Once a tool page loads, it works without an internet connection. All processing is done
+            locally in your browser, making our <strong>pretty JSON formatter</strong> and other utilities
+            fully functional offline.
+          </p>
         </article>
         <article class="faq-item">
-          <h3 class="faq-question">What is the difference between JSON format, validate, and beautify?</h3>
-          <p class="faq-answer">Formatting applies consistent indentation to raw JSON. Validation checks if your JSON follows proper syntax rules. Beautifying (or pretty printing) is the same as formatting — making compressed JSON human-readable. Tooliva's <strong>free online JSON formatter</strong> does all three simultaneously.</p>
+          <h3 class="faq-question">
+            What is the difference between JSON format, validate, and beautify?
+          </h3>
+          <p class="faq-answer">
+            Formatting applies consistent indentation to raw JSON. Validation checks if your JSON
+            follows proper syntax rules. Beautifying (or pretty printing) is the same as formatting
+            — making compressed JSON human-readable. Tooliva's <strong
+              >free online JSON formatter</strong
+            > does all three simultaneously.
+          </p>
         </article>
         <article class="faq-item">
           <h3 class="faq-question">How does the Diff Checker work?</h3>
-          <p class="faq-answer">Our <strong>diff checker</strong> uses an LCS (Longest Common Subsequence) algorithm to compare two texts line by line. Added lines are highlighted in green, removed lines in red, and unchanged lines in neutral. It handles texts of any size and works entirely in your browser.</p>
+          <p class="faq-answer">
+            Our <strong>diff checker</strong> uses an LCS (Longest Common Subsequence) algorithm to compare
+            two texts line by line. Added lines are highlighted in green, removed lines in red, and unchanged
+            lines in neutral. It handles texts of any size and works entirely in your browser.
+          </p>
         </article>
         <article class="faq-item">
           <h3 class="faq-question">Is the Hash Generator secure?</h3>
-          <p class="faq-answer">Yes. The <strong>hash generator</strong> uses the Web Crypto API (SubtleCrypto) built into modern browsers — the same cryptographic primitive used for HTTPS. It supports MD5, SHA-1, SHA-256, and SHA-512. All processing happens locally on your device.</p>
+          <p class="faq-answer">
+            Yes. The <strong>hash generator</strong> uses the Web Crypto API (SubtleCrypto) built into
+            modern browsers — the same cryptographic primitive used for HTTPS. It supports MD5, SHA-1,
+            SHA-256, and SHA-512. All processing happens locally on your device.
+          </p>
         </article>
         <article class="faq-item">
           <h3 class="faq-question">How many tools does Tooliva have?</h3>
-          <p class="faq-answer">Tooliva currently offers <strong>25 free online developer tools</strong> across categories including code formatting, text processing, security, encoding, design, and DevOps. We're actively adding more utilities based on developer feedback.</p>
+          <p class="faq-answer">
+            Tooliva currently offers <strong>25 free online developer tools</strong> across categories
+            including code formatting, text processing, security, encoding, design, and DevOps. We're
+            actively adding more utilities based on developer feedback.
+          </p>
         </article>
         <article class="faq-item">
           <h3 class="faq-question">Are more tools coming?</h3>
-          <p class="faq-answer">We're building new utilities regularly. Our goal is to become the most comprehensive collection of <strong>free online developer tools</strong> on the web. Suggestions are always welcome.</p>
+          <p class="faq-answer">
+            We're building new utilities regularly. Our goal is to become the most comprehensive
+            collection of <strong>free online developer tools</strong> on the web. Suggestions are always
+            welcome.
+          </p>
         </article>
       </div>
     </div>

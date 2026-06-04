@@ -9,7 +9,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 >
   <div class="tool-header-row">
     <label for="input" class="sr-only">JWT input</label>
-    <textarea id="input" class="input-area" placeholder="Paste your JWT here..." spellcheck="false" autofocus></textarea>
+    <textarea
+      id="input"
+      class="input-area"
+      placeholder="Paste your JWT here..."
+      spellcheck="false"
+      autofocus></textarea>
     <button class="btn-secondary-sm try-sample" id="btn-sample">Try sample</button>
   </div>
 
@@ -27,18 +32,36 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
       <div class="output-label-row">
         <span class="output-label">Header</span>
       </div>
-      <div class="output-area"><pre id="header-output" class="output-content" data-placeholder="Decoded header will appear here..."></pre></div>
+      <div class="output-area">
+        <pre
+          id="header-output"
+          class="output-content"
+          data-placeholder="Decoded header will appear here...">
+        </pre>
+      </div>
     </div>
     <div class="output-block">
       <div class="output-label-row">
         <span class="output-label">Payload</span>
         <span id="expiry-badge" class="expiry-badge"></span>
       </div>
-      <div class="output-area"><pre id="payload-output" class="output-content" data-placeholder="Decoded payload will appear here..."></pre></div>
+      <div class="output-area">
+        <pre
+          id="payload-output"
+          class="output-content"
+          data-placeholder="Decoded payload will appear here...">
+        </pre>
+      </div>
     </div>
     <div class="output-block">
       <span class="output-label">Signature</span>
-      <div class="output-area sig-area"><pre id="sig-output" class="output-content sig-content" data-placeholder="Signature will appear here..."></pre></div>
+      <div class="output-area sig-area">
+        <pre
+          id="sig-output"
+          class="output-content sig-content"
+          data-placeholder="Signature will appear here...">
+        </pre>
+      </div>
     </div>
   </div>
 </ToolLayout>
@@ -53,11 +76,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
   const expiryBadge = document.getElementById('expiry-badge') as HTMLSpanElement;
 
-  const sampleJWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+  const sampleJWT =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
   function base64UrlDecode(str: string): string {
     const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-    const padded = base64.padEnd(base64.length + (4 - (base64.length % 4)) % 4, '=');
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
     try {
       const binary = atob(padded);
       const bytes = new Uint8Array(binary.length);
@@ -87,7 +111,11 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function decodeJWT() {
     const raw = input.value.trim();
-    if (!raw) { errorEl.textContent = 'Please paste a JWT to decode.'; errorEl.hidden = false; return; }
+    if (!raw) {
+      errorEl.textContent = 'Please paste a JWT to decode.';
+      errorEl.hidden = false;
+      return;
+    }
     errorEl.hidden = true;
     outputSection.hidden = true;
     try {
@@ -112,12 +140,18 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     const sig = sigOutput.textContent;
     if (!header && !payload && !sig) return;
     const text = `Header:\n${header}\n\nPayload:\n${payload}\n\nSignature:\n${sig}`;
-    navigator.clipboard.writeText(text).then(() => {
-      const orig = copyBtn.textContent || '';
-      copyBtn.textContent = 'Copied ✓';
-      copyBtn.classList.add('btn-copied');
-      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
-    }).catch(() => {});
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        const orig = copyBtn.textContent || '';
+        copyBtn.textContent = 'Copied ✓';
+        copyBtn.classList.add('btn-copied');
+        setTimeout(() => {
+          copyBtn.textContent = orig;
+          copyBtn.classList.remove('btn-copied');
+        }, 1500);
+      })
+      .catch(() => {});
   }
 
   function clearAll() {
@@ -137,8 +171,13 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); decodeJWT(); }
-    if (e.key === 'Escape') { clearAll(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      decodeJWT();
+    }
+    if (e.key === 'Escape') {
+      clearAll();
+    }
   }
 
   function mount() {

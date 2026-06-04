@@ -9,7 +9,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 >
   <div class="tool-header-row">
     <label for="input" class="sr-only">JSON input</label>
-    <textarea id="input" class="input-area" placeholder='Paste your JSON here, e.g. {"key": "value"}' spellcheck="false" autofocus></textarea>
+    <textarea
+      id="input"
+      class="input-area"
+      placeholder='Paste your JSON here, e.g. {"key": "value"}'
+      spellcheck="false"
+      autofocus></textarea>
     <button class="btn-secondary-sm try-sample" id="btn-sample">Try sample</button>
   </div>
 
@@ -24,7 +29,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   <div id="error" class="error-msg" role="alert" hidden></div>
 
   <div class="output-area">
-    <pre id="output" class="output-content" aria-label="Formatted JSON output" data-placeholder="Formatted JSON will appear here..."></pre>
+    <pre
+      id="output"
+      class="output-content"
+      aria-label="Formatted JSON output"
+      data-placeholder="Formatted JSON will appear here...">
+    </pre>
   </div>
 </ToolLayout>
 
@@ -34,13 +44,25 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   const errorEl = document.getElementById('error') as HTMLDivElement;
   const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
 
-  const sample = JSON.stringify({ name: "Tooliva", version: "1.0", features: ["JSON Formatter", "JWT Decoder", "Base64"], active: true }, null, 2);
+  const sample = JSON.stringify(
+    {
+      name: 'Tooliva',
+      version: '1.0',
+      features: ['JSON Formatter', 'JWT Decoder', 'Base64'],
+      active: true,
+    },
+    null,
+    2
+  );
 
   function flashCopy(btn: HTMLButtonElement) {
     const orig = btn.textContent || '';
     btn.textContent = 'Copied ✓';
     btn.classList.add('btn-copied');
-    setTimeout(() => { btn.textContent = orig; btn.classList.remove('btn-copied'); }, 1500);
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.classList.remove('btn-copied');
+    }, 1500);
   }
 
   function showError(msg: string) {
@@ -51,7 +73,10 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function formatJSON() {
     const raw = input.value.trim();
-    if (!raw) { showError('Please enter JSON to format.'); return; }
+    if (!raw) {
+      showError('Please enter JSON to format.');
+      return;
+    }
     try {
       const parsed = JSON.parse(raw);
       output.textContent = JSON.stringify(parsed, null, 2);
@@ -64,7 +89,10 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function minifyJSON() {
     const raw = input.value.trim();
-    if (!raw) { showError('Please enter JSON to minify.'); return; }
+    if (!raw) {
+      showError('Please enter JSON to minify.');
+      return;
+    }
     try {
       const parsed = JSON.parse(raw);
       output.textContent = JSON.stringify(parsed);
@@ -78,7 +106,10 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   function copyOutput() {
     const text = output.textContent;
     if (!text) return;
-    navigator.clipboard.writeText(text).then(() => flashCopy(copyBtn)).catch(() => {});
+    navigator.clipboard
+      .writeText(text)
+      .then(() => flashCopy(copyBtn))
+      .catch(() => {});
   }
 
   function clearAll() {
@@ -95,13 +126,21 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function handleInput() {
     if (!errorEl.hidden) {
-      try { JSON.parse(input.value); errorEl.hidden = true; } catch {}
+      try {
+        JSON.parse(input.value);
+        errorEl.hidden = true;
+      } catch {}
     }
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); formatJSON(); }
-    if (e.key === 'Escape') { clearAll(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      formatJSON();
+    }
+    if (e.key === 'Escape') {
+      clearAll();
+    }
   }
 
   function mount() {

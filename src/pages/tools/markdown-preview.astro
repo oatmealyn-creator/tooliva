@@ -10,7 +10,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   <div class="markdown-container">
     <div class="markdown-panel">
       <label for="input" class="panel-label">Markdown</label>
-      <textarea id="input" class="md-input monospace" placeholder="Write Markdown here..." spellcheck="false" autofocus></textarea>
+      <textarea
+        id="input"
+        class="md-input monospace"
+        placeholder="Write Markdown here..."
+        spellcheck="false"
+        autofocus></textarea>
     </div>
     <div class="markdown-panel">
       <span class="panel-label">Preview</span>
@@ -65,7 +70,10 @@ Done.`;
     [/^#{2}\s+(.+)$/gm, (m) => `<h2>${inline(m[1])}</h2>`],
     [/^#{1}\s+(.+)$/gm, (m) => `<h1>${inline(m[1])}</h1>`],
     [/^> (.+)$/gm, (m) => `<blockquote><p>${inline(m[1])}</p></blockquote>`],
-    [/```(\w*)\n([\s\S]*?)```/g, (m) => `<pre><code class="lang-${m[1]}">${escape(m[2])}</code></pre>`],
+    [
+      /```(\w*)\n([\s\S]*?)```/g,
+      (m) => `<pre><code class="lang-${m[1]}">${escape(m[2])}</code></pre>`,
+    ],
     [/`([^`]+)`/g, (m) => `<code>${escape(m[1])}</code>`],
     [/\*\*(.+?)\*\*/g, (m) => `<strong>${inline(m[1])}</strong>`],
     [/\*(.+?)\*/g, (m) => `<em>${inline(m[1])}</em>`],
@@ -107,27 +115,37 @@ Done.`;
     for (const block of blocks) {
       if (block.startsWith('```')) {
         const m = block.match(/```(\w*)\n([\s\S]*?)```/);
-        if (m) { html.push(`<pre><code class="lang-${m[1]}">${escape(m[2])}</code></pre>`); continue; }
+        if (m) {
+          html.push(`<pre><code class="lang-${m[1]}">${escape(m[2])}</code></pre>`);
+          continue;
+        }
       }
       if (block.startsWith('- ') || block.startsWith('* ')) {
-        const items = block.split('\n').map(l => `<li>${inline(l.replace(/^[-*] /, ''))}</li>`).join('');
+        const items = block
+          .split('\n')
+          .map((l) => `<li>${inline(l.replace(/^[-*] /, ''))}</li>`)
+          .join('');
         html.push(`<ul>${items}</ul>`);
         continue;
       }
       if (/^\d+\. /.test(block)) {
-        const items = block.split('\n').map(l => `<li>${inline(l.replace(/^\d+\. /, ''))}</li>`).join('');
+        const items = block
+          .split('\n')
+          .map((l) => `<li>${inline(l.replace(/^\d+\. /, ''))}</li>`)
+          .join('');
         html.push(`<ol>${items}</ol>`);
         continue;
       }
-      const lines = block.split('\n').filter(l => l.trim());
-      const rendered = lines.map(l => renderLine(l)).join('\n');
+      const lines = block.split('\n').filter((l) => l.trim());
+      const rendered = lines.map((l) => renderLine(l)).join('\n');
       html.push(rendered);
     }
     return html.join('\n');
   }
 
   function update() {
-    preview.innerHTML = render(input.value) || '<p style="color:var(--color-mute)">Preview will appear here...</p>';
+    preview.innerHTML =
+      render(input.value) || '<p style="color:var(--color-mute)">Preview will appear here...</p>';
   }
 
   function clearAll() {
@@ -151,29 +169,131 @@ Done.`;
 </script>
 
 <style>
-  .markdown-container { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md); min-height: 500px; }
-  @media (max-width: 768px) { .markdown-container { grid-template-columns: 1fr; } }
-  .markdown-panel { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .panel-label { font-size: var(--font-size-body-sm); font-weight: 500; color: var(--color-ink); }
-  .md-input { width: 100%; flex: 1; min-height: 400px; padding: var(--spacing-md); font-size: var(--font-size-code); line-height: 1.5; background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); resize: vertical; box-sizing: border-box; }
-  .md-input.monospace { font-family: var(--font-geist-mono); }
-  .md-input:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .md-input::placeholder { color: var(--color-mute); }
-  .preview-output { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: var(--spacing-lg); overflow-y: auto; min-height: 400px; }
-  .preview-output h1, .preview-output h2, .preview-output h3, .preview-output h4 { margin: 0 0 var(--spacing-sm); color: var(--color-ink); }
-  .preview-output h1 { font-size: var(--font-size-display-lg); }
-  .preview-output h2 { font-size: var(--font-size-display-md); }
-  .preview-output h3 { font-size: var(--font-size-display-sm); }
-  .preview-output p { margin: 0 0 var(--spacing-sm); line-height: 1.6; }
-  .preview-output ul, .preview-output ol { margin: 0 0 var(--spacing-sm); padding-left: var(--spacing-lg); }
-  .preview-output li { margin-bottom: var(--spacing-xs); line-height: 1.5; }
-  .preview-output code { font-family: var(--font-geist-mono); font-size: var(--font-size-code); background-color: var(--color-canvas-soft); padding: 2px 6px; border-radius: 3px; }
-  .preview-output pre { background-color: var(--color-canvas); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); padding: var(--spacing-md); overflow-x: auto; margin: 0 0 var(--spacing-sm); }
-  .preview-output pre code { background: none; padding: 0; }
-  .preview-output blockquote { border-left: 3px solid var(--color-primary); padding-left: var(--spacing-md); margin: 0 0 var(--spacing-sm); color: var(--color-mute); }
-  .preview-output blockquote p { margin: 0; }
-  .preview-output a { color: var(--color-link); }
-  .preview-output a:hover { color: var(--color-link-deep); }
-  .preview-output strong { color: var(--color-ink); font-weight: 600; }
-  .button-row { display: flex; gap: var(--spacing-sm); align-items: center; flex-wrap: wrap; }
+  .markdown-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    min-height: 500px;
+  }
+  @media (max-width: 768px) {
+    .markdown-container {
+      grid-template-columns: 1fr;
+    }
+  }
+  .markdown-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .panel-label {
+    font-size: var(--font-size-body-sm);
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .md-input {
+    width: 100%;
+    flex: 1;
+    min-height: 400px;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-code);
+    line-height: 1.5;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .md-input.monospace {
+    font-family: var(--font-geist-mono);
+  }
+  .md-input:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .md-input::placeholder {
+    color: var(--color-mute);
+  }
+  .preview-output {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    min-height: 400px;
+  }
+  .preview-output h1,
+  .preview-output h2,
+  .preview-output h3,
+  .preview-output h4 {
+    margin: 0 0 var(--spacing-sm);
+    color: var(--color-ink);
+  }
+  .preview-output h1 {
+    font-size: var(--font-size-display-lg);
+  }
+  .preview-output h2 {
+    font-size: var(--font-size-display-md);
+  }
+  .preview-output h3 {
+    font-size: var(--font-size-display-sm);
+  }
+  .preview-output p {
+    margin: 0 0 var(--spacing-sm);
+    line-height: 1.6;
+  }
+  .preview-output ul,
+  .preview-output ol {
+    margin: 0 0 var(--spacing-sm);
+    padding-left: var(--spacing-lg);
+  }
+  .preview-output li {
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.5;
+  }
+  .preview-output code {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    background-color: var(--color-canvas-soft);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .preview-output pre {
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-md);
+    overflow-x: auto;
+    margin: 0 0 var(--spacing-sm);
+  }
+  .preview-output pre code {
+    background: none;
+    padding: 0;
+  }
+  .preview-output blockquote {
+    border-left: 3px solid var(--color-primary);
+    padding-left: var(--spacing-md);
+    margin: 0 0 var(--spacing-sm);
+    color: var(--color-mute);
+  }
+  .preview-output blockquote p {
+    margin: 0;
+  }
+  .preview-output a {
+    color: var(--color-link);
+  }
+  .preview-output a:hover {
+    color: var(--color-link-deep);
+  }
+  .preview-output strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .button-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+    flex-wrap: wrap;
+  }
 </style>

@@ -26,7 +26,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   <div id="warning" class="warning-msg" role="alert" hidden></div>
 
   <div class="output-area">
-    <pre id="output" class="output-content" aria-label="Generated UUIDs" data-placeholder="Generated UUIDs will appear here..."></pre>
+    <pre
+      id="output"
+      class="output-content"
+      aria-label="Generated UUIDs"
+      data-placeholder="Generated UUIDs will appear here...">
+    </pre>
   </div>
 </ToolLayout>
 
@@ -40,8 +45,8 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   function generateV4(): string {
     if (crypto.randomUUID) return crypto.randomUUID();
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0;
-      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      const r = (Math.random() * 16) | 0;
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
     });
   }
 
@@ -49,9 +54,15 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     const UUID_EPOCH = BigInt('0x01b21dd213814000');
     const ts = BigInt(Date.now()) * BigInt(10000) + UUID_EPOCH + offset;
 
-    const timeLow = Number(ts & BigInt(0xffffffff)).toString(16).padStart(8, '0');
-    const timeMid = Number((ts >> BigInt(32)) & BigInt(0xffff)).toString(16).padStart(4, '0');
-    const timeHi = Number((ts >> BigInt(48)) & BigInt(0x0fff)).toString(16).padStart(3, '0');
+    const timeLow = Number(ts & BigInt(0xffffffff))
+      .toString(16)
+      .padStart(8, '0');
+    const timeMid = Number((ts >> BigInt(32)) & BigInt(0xffff))
+      .toString(16)
+      .padStart(4, '0');
+    const timeHi = Number((ts >> BigInt(48)) & BigInt(0x0fff))
+      .toString(16)
+      .padStart(3, '0');
 
     const clock = Math.floor(Math.random() * 16384);
     const clockHex = ((clock | 0x8000) >>> 0).toString(16).padStart(4, '0');
@@ -59,21 +70,41 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     const node = new Uint8Array(6);
     crypto.getRandomValues(node);
     node[0] |= 0x01;
-    const nodeHex = Array.from(node).map(b => b.toString(16).padStart(2, '0')).join('');
+    const nodeHex = Array.from(node)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
 
-    return timeLow + '-' + timeMid + '-1' + timeHi + '-' + clockHex.slice(0, 2) + clockHex.slice(2) + '-' + nodeHex;
+    return (
+      timeLow +
+      '-' +
+      timeMid +
+      '-1' +
+      timeHi +
+      '-' +
+      clockHex.slice(0, 2) +
+      clockHex.slice(2) +
+      '-' +
+      nodeHex
+    );
   }
 
   function generate() {
     warningEl.hidden = true;
     let n = parseInt(countInput.value, 10);
-    if (isNaN(n) || n < 1) { n = 1; warningEl.textContent = 'Count too low — set to 1.'; warningEl.hidden = false; }
-    if (n > 100) { n = 100; warningEl.textContent = 'Count too high — set to 100.'; warningEl.hidden = false; }
+    if (isNaN(n) || n < 1) {
+      n = 1;
+      warningEl.textContent = 'Count too low — set to 1.';
+      warningEl.hidden = false;
+    }
+    if (n > 100) {
+      n = 100;
+      warningEl.textContent = 'Count too high — set to 100.';
+      warningEl.hidden = false;
+    }
     countInput.value = String(n);
 
-    const fn = versionSelect.value === 'v1'
-      ? (i: number) => generateV1(BigInt(i) * 1000n)
-      : generateV4;
+    const fn =
+      versionSelect.value === 'v1' ? (i: number) => generateV1(BigInt(i) * 1000n) : generateV4;
     const uuids: string[] = [];
     for (let i = 0; i < n; i++) uuids.push(fn(i));
     output.textContent = uuids.join('\n');
@@ -82,12 +113,18 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   function copyOutput() {
     const text = output.textContent;
     if (!text) return;
-    navigator.clipboard.writeText(text).then(() => {
-      const orig = copyBtn.textContent || '';
-      copyBtn.textContent = 'Copied ✓';
-      copyBtn.classList.add('btn-copied');
-      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
-    }).catch(() => {});
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        const orig = copyBtn.textContent || '';
+        copyBtn.textContent = 'Copied ✓';
+        copyBtn.classList.add('btn-copied');
+        setTimeout(() => {
+          copyBtn.textContent = orig;
+          copyBtn.classList.remove('btn-copied');
+        }, 1500);
+      })
+      .catch(() => {});
   }
 
   function clearAll() {
@@ -97,8 +134,13 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); generate(); }
-    if (e.key === 'Escape') { clearAll(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      generate();
+    }
+    if (e.key === 'Escape') {
+      clearAll();
+    }
   }
 
   function mount() {
@@ -125,7 +167,8 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     margin-bottom: var(--spacing-md);
     flex-wrap: wrap;
   }
-  .count-label, .version-label {
+  .count-label,
+  .version-label {
     font-size: var(--font-size-body-sm);
     font-weight: 500;
     color: var(--color-ink);

@@ -29,7 +29,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   <div class="field-row">
     <label for="test-input" class="field-label">Test string</label>
-    <textarea id="test-input" class="input-area monospace" placeholder="Enter text to test against the regex..." spellcheck="false" autofocus></textarea>
+    <textarea
+      id="test-input"
+      class="input-area monospace"
+      placeholder="Enter text to test against the regex..."
+      spellcheck="false"
+      autofocus></textarea>
   </div>
 
   <div class="button-row">
@@ -66,8 +71,18 @@ HELLO`;
     const pat = pattern.value;
     const flg = flags.value;
     const txt = testInput.value;
-    if (!pat) { errorEl.textContent = 'Please enter a regex pattern.'; errorEl.hidden = false; resultArea.hidden = true; return; }
-    if (!txt) { errorEl.textContent = 'Please enter a test string.'; errorEl.hidden = false; resultArea.hidden = true; return; }
+    if (!pat) {
+      errorEl.textContent = 'Please enter a regex pattern.';
+      errorEl.hidden = false;
+      resultArea.hidden = true;
+      return;
+    }
+    if (!txt) {
+      errorEl.textContent = 'Please enter a test string.';
+      errorEl.hidden = false;
+      resultArea.hidden = true;
+      return;
+    }
     errorEl.hidden = true;
     try {
       const regex = new RegExp(pat, flg);
@@ -82,7 +97,8 @@ HELLO`;
         match = regex.exec(txt);
         if (match) matches.push(match[0]);
       }
-      resultStats.textContent = matches.length + ' match' + (matches.length !== 1 ? 'es' : '') + ' found';
+      resultStats.textContent =
+        matches.length + ' match' + (matches.length !== 1 ? 'es' : '') + ' found';
       if (matches.length > 0) {
         let html = '';
         for (const m of matches) {
@@ -118,7 +134,7 @@ HELLO`;
 
   function setFlags(flg: string) {
     flags.value = flg;
-    document.querySelectorAll('.flag-btn').forEach(btn => {
+    document.querySelectorAll('.flag-btn').forEach((btn) => {
       const f = (btn as HTMLElement).dataset.flag!;
       btn.classList.toggle('active', flg.includes(f));
     });
@@ -139,8 +155,13 @@ HELLO`;
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); testRegex(); }
-    if (e.key === 'Escape') { clearAll(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      testRegex();
+    }
+    if (e.key === 'Escape') {
+      clearAll();
+    }
   }
 
   function mount() {
@@ -148,40 +169,181 @@ HELLO`;
     document.getElementById('btn-test')!.addEventListener('click', testRegex);
     document.getElementById('btn-clear')!.addEventListener('click', clearAll);
     document.getElementById('btn-sample')!.addEventListener('click', loadSample);
-    document.querySelectorAll('.flag-btn').forEach(btn => btn.addEventListener('click', toggleFlag));
+    document
+      .querySelectorAll('.flag-btn')
+      .forEach((btn) => btn.addEventListener('click', toggleFlag));
     setFlags(flags.value);
   }
 
   mount();
-  document.addEventListener('astro:before-swap', () => document.removeEventListener('keydown', handleKeydown));
+  document.addEventListener('astro:before-swap', () =>
+    document.removeEventListener('keydown', handleKeydown)
+  );
 </script>
 
 <style>
-  .regex-controls { margin-bottom: var(--spacing-md); }
-  .field-row { margin-bottom: var(--spacing-md); display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .field-label { font-size: var(--font-size-body-sm); font-weight: 500; color: var(--color-ink); }
-  .pattern-wrap { display: flex; align-items: center; gap: 2px; }
-  .pattern-slash { font-family: var(--font-geist-mono); font-size: var(--font-size-body-lg); color: var(--color-mute); padding: 0 4px; }
-  .pattern-input { flex: 1; padding: 10px 12px; font-family: var(--font-geist-mono); font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: 0; box-sizing: border-box; outline: none; }
-  .pattern-input:focus { outline: 2px solid var(--color-ink); outline-offset: -2px; z-index: 1; }
-  .flags-input { width: 60px; padding: 10px 12px; font-family: var(--font-geist-mono); font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: 0; text-align: center; box-sizing: border-box; outline: none; }
-  .flags-input:focus { outline: 2px solid var(--color-ink); outline-offset: -2px; }
-  .input-area { width: 100%; min-height: 200px; padding: var(--spacing-md); font-size: var(--font-size-code); line-height: 1.5; background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); resize: vertical; box-sizing: border-box; }
-  .input-area.monospace { font-family: var(--font-geist-mono); }
-  .input-area:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .input-area::placeholder { color: var(--color-mute); }
-  .flags-toggles { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); margin-top: var(--spacing-xs); }
-  .flag-btn { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); padding: 4px 10px; background-color: var(--color-canvas); color: var(--color-body); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-pill); cursor: pointer; transition: all 0.15s ease; }
-  .flag-btn:hover { border-color: var(--color-hairline-strong); }
-  .flag-btn.active { background-color: var(--color-primary); color: var(--color-on-primary); border-color: var(--color-primary); }
-  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
-  .shortcut-hint { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); }
-  @media (min-width: 640px) { .shortcut-hint { margin-left: auto; } }
-  .error-msg { font-family: var(--font-geist-mono); font-size: var(--font-size-body-sm); color: var(--color-error); background-color: var(--color-error-soft); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-md); }
-  .result-area { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: 1rem; }
-  .result-stats { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-body); margin-bottom: var(--spacing-md); }
-  .matches-area { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .match-item { font-family: var(--font-geist-mono); font-size: var(--font-size-code); color: var(--color-ink); padding: 6px 10px; background-color: var(--color-canvas); border-radius: var(--border-radius-xs); }
-  .match-item code { word-break: break-all; }
-  .match-none { color: var(--color-mute); }
+  .regex-controls {
+    margin-bottom: var(--spacing-md);
+  }
+  .field-row {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .field-label {
+    font-size: var(--font-size-body-sm);
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .pattern-wrap {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .pattern-slash {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-lg);
+    color: var(--color-mute);
+    padding: 0 4px;
+  }
+  .pattern-input {
+    flex: 1;
+    padding: 10px 12px;
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-md);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: 0;
+    box-sizing: border-box;
+    outline: none;
+  }
+  .pattern-input:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: -2px;
+    z-index: 1;
+  }
+  .flags-input {
+    width: 60px;
+    padding: 10px 12px;
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-md);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: 0;
+    text-align: center;
+    box-sizing: border-box;
+    outline: none;
+  }
+  .flags-input:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: -2px;
+  }
+  .input-area {
+    width: 100%;
+    min-height: 200px;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-code);
+    line-height: 1.5;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .input-area.monospace {
+    font-family: var(--font-geist-mono);
+  }
+  .input-area:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .input-area::placeholder {
+    color: var(--color-mute);
+  }
+  .flags-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-xs);
+  }
+  .flag-btn {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    padding: 4px 10px;
+    background-color: var(--color-canvas);
+    color: var(--color-body);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-pill);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .flag-btn:hover {
+    border-color: var(--color-hairline-strong);
+  }
+  .flag-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border-color: var(--color-primary);
+  }
+  .button-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .shortcut-hint {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+  }
+  @media (min-width: 640px) {
+    .shortcut-hint {
+      margin-left: auto;
+    }
+  }
+  .error-msg {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-error);
+    background-color: var(--color-error-soft);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  .result-area {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: 1rem;
+  }
+  .result-stats {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-body);
+    margin-bottom: var(--spacing-md);
+  }
+  .matches-area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .match-item {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-code);
+    color: var(--color-ink);
+    padding: 6px 10px;
+    background-color: var(--color-canvas);
+    border-radius: var(--border-radius-xs);
+  }
+  .match-item code {
+    word-break: break-all;
+  }
+  .match-none {
+    color: var(--color-mute);
+  }
 </style>

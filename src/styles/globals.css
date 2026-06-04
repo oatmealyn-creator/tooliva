@@ -101,6 +101,14 @@
 }
 
 @layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+  }
+
   /* ─── FULL-PAGE SUNSHINE GRADIENT ─── */
   /* Replace this entire body background rule with:
      background-color: var(--color-canvas-soft);
@@ -1009,4 +1017,83 @@
   color: var(--color-body);
   line-height: 1.5;
   margin: 0;
+}
+
+/* ─── Shared tool page styles ─── */
+
+.tool-header-row {
+  position: relative;
+}
+.try-sample {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  z-index: 1;
+}
+.input-area {
+  width: 100%;
+  min-height: 200px;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-code);
+  line-height: 1.5;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--border-radius-sm);
+  resize: vertical;
+  box-sizing: border-box;
+}
+.input-area.monospace {
+  font-family: var(--font-geist-mono);
+}
+.input-area:focus {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+.input-area::placeholder {
+  color: var(--color-mute);
+}
+.button-row {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-md) 0;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.shortcut-hint {
+  font-family: var(--font-geist-mono);
+  font-size: var(--font-size-caption-mono);
+  color: var(--color-mute);
+}
+@media (min-width: 640px) {
+  .shortcut-hint {
+    margin-left: auto;
+  }
+}
+.error-msg {
+  font-family: var(--font-geist-mono);
+  font-size: var(--font-size-body-sm);
+  color: var(--color-error);
+  background-color: var(--color-error-soft);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-md);
+}
+.output-area {
+  background-color: var(--color-canvas-soft-2);
+  border-radius: var(--border-radius-md);
+  border: 1px solid #00000014;
+  padding: 1rem;
+  min-height: 200px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+.output-content {
+  font-family: var(--font-geist-mono);
+  font-size: var(--font-size-code);
+  line-height: 1.5;
+  color: var(--color-ink);
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
 }

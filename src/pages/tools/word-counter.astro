@@ -9,7 +9,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 >
   <div class="tool-header-row">
     <label for="input" class="sr-only">Text input</label>
-    <textarea id="input" class="input-area" placeholder="Paste or type your text here..." spellcheck="true" autofocus></textarea>
+    <textarea
+      id="input"
+      class="input-area"
+      placeholder="Paste or type your text here..."
+      spellcheck="true"
+      autofocus></textarea>
   </div>
 
   <div class="button-row">
@@ -56,9 +61,9 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     const chars = text.length;
     const charsNoSpace = text.replace(/\s/g, '').length;
     const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const sents = text ? text.split(/[.!?]+\s*/).filter(s => s.trim().length > 0).length : 0;
-    const paras = text ? text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length : 0;
-    const lines = text ? text.split('\n').length : (text.length > 0 ? 1 : 0);
+    const sents = text ? text.split(/[.!?]+\s*/).filter((s) => s.trim().length > 0).length : 0;
+    const paras = text ? text.split(/\n\s*\n/).filter((p) => p.trim().length > 0).length : 0;
+    const lines = text ? text.split('\n').length : text.length > 0 ? 1 : 0;
     const readTime = Math.max(1, Math.round(words / 200));
 
     document.getElementById('char-count')!.textContent = String(chars);
@@ -90,15 +95,70 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 </script>
 
 <style>
-  .tool-header-row { position: relative; }
-  .input-area { width: 100%; min-height: 200px; padding: var(--spacing-md); font-size: var(--font-size-body-md); line-height: 1.6; background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); resize: vertical; box-sizing: border-box; }
-  .input-area:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .input-area::placeholder { color: var(--color-mute); }
-  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
-  .counts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); }
-  @media (max-width: 640px) { .counts-grid { grid-template-columns: repeat(2, 1fr); } }
-  .count-card { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: var(--spacing-lg); text-align: center; }
-  .count-number { display: block; font-size: var(--font-size-display-lg); font-weight: 600; color: var(--color-ink); line-height: 1.2; }
-  .count-label { display: block; font-size: var(--font-size-body-sm); color: var(--color-body); margin-top: var(--spacing-xs); }
-  .count-sub { display: block; font-size: var(--font-size-caption); color: var(--color-mute); margin-top: 2px; }
+  .tool-header-row {
+    position: relative;
+  }
+  .input-area {
+    width: 100%;
+    min-height: 200px;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-body-md);
+    line-height: 1.6;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .input-area:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .input-area::placeholder {
+    color: var(--color-mute);
+  }
+  .button-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .counts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+  }
+  @media (max-width: 640px) {
+    .counts-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .count-card {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: var(--spacing-lg);
+    text-align: center;
+  }
+  .count-number {
+    display: block;
+    font-size: var(--font-size-display-lg);
+    font-weight: 600;
+    color: var(--color-ink);
+    line-height: 1.2;
+  }
+  .count-label {
+    display: block;
+    font-size: var(--font-size-body-sm);
+    color: var(--color-body);
+    margin-top: var(--spacing-xs);
+  }
+  .count-sub {
+    display: block;
+    font-size: var(--font-size-caption);
+    color: var(--color-mute);
+    margin-top: 2px;
+  }
 </style>

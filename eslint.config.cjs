@@ -10,16 +10,15 @@ module.exports = [
       parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
     },
     plugins: {
-      prettier: require('eslint-plugin-prettier'),
       '@typescript-eslint': require('@typescript-eslint/eslint-plugin'),
     },
     rules: {
-      // keep eslint recommended rules via direct rule declarations where needed
-      'prettier/prettier': 'error',
+      // Formatting is handled by Prettier CLI (npm run format)
+      // TypeScript/ESLint rules only
     },
   },
 
-  // Astro files — use the astro processor + parser and enable Prettier rule
+  // Astro files — use the astro processor + parser
   {
     files: ['**/*.astro'],
     processor: 'astro/astro',
@@ -30,13 +29,12 @@ module.exports = [
       },
     },
     plugins: {
-      prettier: require('eslint-plugin-prettier'),
       astro: require('eslint-plugin-astro'),
       '@typescript-eslint': require('@typescript-eslint/eslint-plugin'),
     },
     rules: {
-      // enable prettier as an ESLint rule for .astro files
-      'prettier/prettier': 'error',
+      // Formatting is handled by Prettier CLI (npm run format)
+      // Astro/ESLint rules only
     },
   },
 ];

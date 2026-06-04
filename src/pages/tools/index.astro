@@ -5,16 +5,28 @@ import ToolCard from '../../components/ToolCard.astro';
 import { tools } from '../../data/tools';
 ---
 
-<Layout pageTitle="All Tools — Tooliva" pageDescription="Browse every developer tool on Tooliva — JSON formatter, JWT decoder, Base64 encoder, UUID generator, and cron builder.">
+<Layout
+  pageTitle="All Tools — Tooliva"
+  pageDescription="Browse every developer tool on Tooliva — JSON formatter, JWT decoder, Base64 encoder, hash generator, diff checker, and more."
+>
   <section class="tools-index-band">
     <div class="tools-index-container">
       <h1 class="tools-index-title">All Tools.</h1>
-      <p class="tools-index-subtitle">Every utility in one place &mdash; format, decode, generate, and build.</p>
+      <p class="tools-index-subtitle">
+        Every utility in one place &mdash; format, decode, generate, and build.
+      </p>
 
       <div class="tools-grid">
-        {tools.map((tool) => (
-          <ToolCard name={tool.name} slug={tool.slug} description={tool.description} category={tool.category} />
-        ))}
+        {
+          tools.map((tool) => (
+            <ToolCard
+              name={tool.name}
+              slug={tool.slug}
+              description={tool.description}
+              category={tool.category}
+            />
+          ))
+        }
       </div>
     </div>
   </section>

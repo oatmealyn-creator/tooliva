@@ -11,11 +11,11 @@ export interface Props {
   ogImage?: string;
 }
 
-const SITE_URL = 'https://tooliva.vercel.app';
+const SITE_URL = 'https://tooliva-swart.vercel.app';
 
 const {
   pageTitle = 'Tooliva — Free Online Developer Tools | JSON Formatter, JWT Decoder & More',
-  pageDescription = 'Free online developer tools — JSON formatter, JWT decoder, Base64 encoder, UUID generator, and cron builder. Fast, clean, and privacy-focused utilities for developers.',
+  pageDescription = 'Free online developer tools — JSON formatter, JWT decoder, Base64 encoder, hash generator, diff checker, and more. Fast, clean, privacy-focused utilities for developers.',
   pageKeywords = 'json formatter, json formatter online, best json formatter, pretty json formatter, free online json formatter, jwt decoder, jwt decoder online, developer tools, online developer utilities, free developer tools',
   ogImage = `${SITE_URL}/og-image.svg`,
 } = Astro.props;
@@ -27,13 +27,13 @@ const pageUrl = `${SITE_URL}${Astro.url.pathname}`;
   <head>
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-DXG3JPJZB2"></script>
     <script is:inline>
-window.dataLayer = window.dataLayer || [];
-function gtag() {
-  dataLayer.push(arguments);
-}
-gtag('js', new Date());
-gtag('config', 'G-DXG3JPJZB2');
-</script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-DXG3JPJZB2');
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
@@ -61,33 +61,38 @@ gtag('config', 'G-DXG3JPJZB2');
     <meta name="apple-mobile-web-app-title" content="Tooliva" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="generator" content={Astro.generator} />
-    <script type="application/ld+json" is:inline set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "Organization",
-          "@id": `${SITE_URL}/#organization`,
-          "name": "Tooliva",
-          "url": SITE_URL,
-          "description": "Free online developer tools and utilities.",
-          "logo": {
-            "@type": "ImageObject",
-            "url": `${SITE_URL}/og-image.svg`,
-            "width": 1200,
-            "height": 630
-          }
-        },
-        {
-          "@type": "WebSite",
-          "@id": `${SITE_URL}/#website`,
-          "url": SITE_URL,
-          "name": "Tooliva",
-          "description": "Free online developer tools — JSON formatter, JWT decoder, Base64 encoder, UUID generator, and cron builder.",
-          "publisher": { "@id": `${SITE_URL}/#organization` },
-          "inLanguage": "en-US"
-        }
-      ]
-    })} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Organization',
+            '@id': `${SITE_URL}/#organization`,
+            name: 'Tooliva',
+            url: SITE_URL,
+            description: 'Free online developer tools and utilities.',
+            logo: {
+              '@type': 'ImageObject',
+              url: `${SITE_URL}/og-image.svg`,
+              width: 1200,
+              height: 630,
+            },
+          },
+          {
+            '@type': 'WebSite',
+            '@id': `${SITE_URL}/#website`,
+            url: SITE_URL,
+            name: 'Tooliva',
+            description:
+              'Free online developer tools — JSON formatter, JWT decoder, Base64 encoder, hash generator, diff checker, and more.',
+            publisher: { '@id': `${SITE_URL}/#organization` },
+            inLanguage: 'en-US',
+          },
+        ],
+      })}
+    />
     <slot name="head" />
   </head>
   <body>
@@ -110,7 +115,7 @@ gtag('config', 'G-DXG3JPJZB2');
         }
       },
       { threshold: 0.1 }
-  );
+    );
     document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
   }
 

@@ -9,7 +9,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 >
   <div class="field-row">
     <label for="input-value" class="field-label">Number</label>
-    <input id="input-value" class="field-input monospace" placeholder="Enter a number" value="255" />
+    <input
+      id="input-value"
+      class="field-input monospace"
+      placeholder="Enter a number"
+      value="255"
+    />
   </div>
 
   <div class="field-row">
@@ -62,11 +67,21 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function doConvert() {
     const raw = inputVal.value.trim();
-    if (!raw) { errorEl.textContent = 'Please enter a number.'; errorEl.hidden = false; results.hidden = true; return; }
+    if (!raw) {
+      errorEl.textContent = 'Please enter a number.';
+      errorEl.hidden = false;
+      results.hidden = true;
+      return;
+    }
     errorEl.hidden = true;
     const fromBase = parseInt(inputBase.value, 10);
     const dec = parseInt(raw, fromBase);
-    if (isNaN(dec)) { errorEl.textContent = 'Invalid number for the selected base.'; errorEl.hidden = false; results.hidden = true; return; }
+    if (isNaN(dec)) {
+      errorEl.textContent = 'Invalid number for the selected base.';
+      errorEl.hidden = false;
+      results.hidden = true;
+      return;
+    }
     document.getElementById('bin-value')!.textContent = dec.toString(2);
     document.getElementById('oct-value')!.textContent = dec.toString(8);
     document.getElementById('dec-value')!.textContent = dec.toString(10);
@@ -81,15 +96,20 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doConvert(); }
-    if (e.key === 'Escape') { clearAll(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      doConvert();
+    }
+    if (e.key === 'Escape') {
+      clearAll();
+    }
   }
 
   function mount() {
     inputVal.addEventListener('keydown', handleKeydown);
     document.getElementById('btn-convert')!.addEventListener('click', doConvert);
     document.getElementById('btn-clear')!.addEventListener('click', clearAll);
-    document.querySelectorAll('.base-copy').forEach(btn => {
+    document.querySelectorAll('.base-copy').forEach((btn) => {
       btn.addEventListener('click', () => {
         const id = (btn as HTMLElement).dataset.copy!;
         const text = document.getElementById(id)!.textContent || '';
@@ -99,25 +119,112 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     doConvert();
   }
   mount();
-  document.addEventListener('astro:before-swap', () => inputVal.removeEventListener('keydown', handleKeydown));
+  document.addEventListener('astro:before-swap', () =>
+    inputVal.removeEventListener('keydown', handleKeydown)
+  );
 </script>
 
 <style>
-  .field-row { margin-bottom: var(--spacing-md); display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .field-label { font-size: var(--font-size-body-sm); font-weight: 500; color: var(--color-ink); }
-  .field-input { padding: 10px 12px; font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); box-sizing: border-box; width: 100%; }
-  .field-input.monospace { font-family: var(--font-geist-mono); }
-  .field-input:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .base-select { padding: 10px 12px; font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); cursor: pointer; }
-  .base-select:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
-  .shortcut-hint { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); }
-  @media (min-width: 640px) { .shortcut-hint { margin-left: auto; } }
-  .error-msg { font-family: var(--font-geist-mono); font-size: var(--font-size-body-sm); color: var(--color-error); background-color: var(--color-error-soft); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-md); }
-  .base-results { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); }
-  @media (max-width: 640px) { .base-results { grid-template-columns: 1fr; } }
-  .base-card { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: var(--spacing-md); display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .base-label { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); text-transform: uppercase; letter-spacing: 0.05em; }
-  .base-value { font-family: var(--font-geist-mono); font-size: var(--font-size-body-md); color: var(--color-ink); word-break: break-all; }
-  .base-copy { align-self: flex-start; }
+  .field-row {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .field-label {
+    font-size: var(--font-size-body-sm);
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .field-input {
+    padding: 10px 12px;
+    font-size: var(--font-size-body-md);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .field-input.monospace {
+    font-family: var(--font-geist-mono);
+  }
+  .field-input:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .base-select {
+    padding: 10px 12px;
+    font-size: var(--font-size-body-md);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+  }
+  .base-select:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .button-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .shortcut-hint {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+  }
+  @media (min-width: 640px) {
+    .shortcut-hint {
+      margin-left: auto;
+    }
+  }
+  .error-msg {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-error);
+    background-color: var(--color-error-soft);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  .base-results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+  }
+  @media (max-width: 640px) {
+    .base-results {
+      grid-template-columns: 1fr;
+    }
+  }
+  .base-card {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .base-label {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .base-value {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-md);
+    color: var(--color-ink);
+    word-break: break-all;
+  }
+  .base-copy {
+    align-self: flex-start;
+  }
 </style>

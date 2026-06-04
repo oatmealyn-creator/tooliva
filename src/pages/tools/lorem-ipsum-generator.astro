@@ -32,7 +32,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   <div id="error" class="error-msg" role="alert" hidden></div>
 
   <div class="output-area">
-    <pre id="output" class="output-content" aria-label="Generated lorem ipsum" data-placeholder="Generated text will appear here..."></pre>
+    <pre
+      id="output"
+      class="output-content"
+      aria-label="Generated lorem ipsum"
+      data-placeholder="Generated text will appear here...">
+    </pre>
   </div>
 </ToolLayout>
 
@@ -43,17 +48,29 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   const errorEl = document.getElementById('error') as HTMLDivElement;
   const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
 
-  const lorem = 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum'.split(' ');
+  const lorem =
+    'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum'.split(
+      ' '
+    );
 
-  const extra = 'arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas maecenas pharetra convallis posuere morbi leo urna molestie at elementum eu facilisis sed odio morbi quis commodo odio aenean sed adipiscing diam donec adipiscing tristique risus nec feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat nibh sed pulvinar proin gravida hendrerit lectus'.split(' ');
+  const extra =
+    'arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas maecenas pharetra convallis posuere morbi leo urna molestie at elementum eu facilisis sed odio morbi quis commodo odio aenean sed adipiscing diam donec adipiscing tristique risus nec feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat nibh sed pulvinar proin gravida hendrerit lectus'.split(
+      ' '
+    );
 
   const words = [...lorem, ...extra];
 
-  function rand(n: number): number { return Math.floor(Math.random() * n); }
+  function rand(n: number): number {
+    return Math.floor(Math.random() * n);
+  }
 
-  function randomWord(): string { return words[rand(words.length)]; }
+  function randomWord(): string {
+    return words[rand(words.length)];
+  }
 
-  function capitalize(s: string): string { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function capitalize(s: string): string {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
 
   function sentence(): string {
     const n = rand(8) + 5;
@@ -63,7 +80,9 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function paragraph(): string {
     const n = rand(4) + 4;
-    return Array.from({ length: n }, () => sentence()).join('').trim();
+    return Array.from({ length: n }, () => sentence())
+      .join('')
+      .trim();
   }
 
   function generate() {
@@ -77,7 +96,9 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
       result = Array.from({ length: n }, () => randomWord()).join(' ');
       result = capitalize(result) + '.';
     } else if (type === 'sentences') {
-      result = Array.from({ length: n }, () => sentence()).join('').trim();
+      result = Array.from({ length: n }, () => sentence())
+        .join('')
+        .trim();
     } else {
       result = Array.from({ length: n }, () => paragraph()).join('\n\n');
     }
@@ -88,12 +109,18 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   function copyOutput() {
     const text = output.textContent;
     if (!text) return;
-    navigator.clipboard.writeText(text).then(() => {
-      const orig = copyBtn.textContent || '';
-      copyBtn.textContent = 'Copied \u2713';
-      copyBtn.classList.add('btn-copied');
-      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
-    }).catch(() => {});
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        const orig = copyBtn.textContent || '';
+        copyBtn.textContent = 'Copied \u2713';
+        copyBtn.classList.add('btn-copied');
+        setTimeout(() => {
+          copyBtn.textContent = orig;
+          copyBtn.classList.remove('btn-copied');
+        }, 1500);
+      })
+      .catch(() => {});
   }
 
   function clearAll() {
@@ -102,8 +129,13 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); generate(); }
-    if (e.key === 'Escape') { clearAll(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      generate();
+    }
+    if (e.key === 'Escape') {
+      clearAll();
+    }
   }
 
   function mount() {
@@ -114,21 +146,98 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     generate();
   }
   mount();
-  document.addEventListener('astro:before-swap', () => document.removeEventListener('keydown', handleKeydown));
+  document.addEventListener('astro:before-swap', () =>
+    document.removeEventListener('keydown', handleKeydown)
+  );
 </script>
 
 <style>
-  .controls-row { display: flex; gap: var(--spacing-lg); margin-bottom: var(--spacing-md); flex-wrap: wrap; align-items: flex-end; }
-  .control-group { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .control-label { font-size: var(--font-size-body-sm); font-weight: 500; color: var(--color-ink); }
-  .count-input { width: 80px; padding: 8px 12px; font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); text-align: center; box-sizing: border-box; }
-  .count-input:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .type-select { padding: 8px 12px; font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); cursor: pointer; }
-  .type-select:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
-  .shortcut-hint { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); }
-  @media (min-width: 640px) { .shortcut-hint { margin-left: auto; } }
-  .error-msg { font-family: var(--font-geist-mono); font-size: var(--font-size-body-sm); color: var(--color-error); background-color: var(--color-error-soft); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-md); }
-  .output-area { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: 1rem; min-height: 200px; max-height: 600px; overflow-y: auto; }
-  .output-content { font-family: var(--font-geist); font-size: var(--font-size-body-md); line-height: 1.7; color: var(--color-body); margin: 0; white-space: pre-wrap; }
+  .controls-row {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .control-label {
+    font-size: var(--font-size-body-sm);
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .count-input {
+    width: 80px;
+    padding: 8px 12px;
+    font-size: var(--font-size-body-md);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .count-input:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .type-select {
+    padding: 8px 12px;
+    font-size: var(--font-size-body-md);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+  }
+  .type-select:focus {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .button-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .shortcut-hint {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-caption-mono);
+    color: var(--color-mute);
+  }
+  @media (min-width: 640px) {
+    .shortcut-hint {
+      margin-left: auto;
+    }
+  }
+  .error-msg {
+    font-family: var(--font-geist-mono);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-error);
+    background-color: var(--color-error-soft);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  .output-area {
+    background-color: var(--color-canvas-soft-2);
+    border-radius: var(--border-radius-md);
+    border: 1px solid #00000014;
+    padding: 1rem;
+    min-height: 200px;
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  .output-content {
+    font-family: var(--font-geist);
+    font-size: var(--font-size-body-md);
+    line-height: 1.7;
+    color: var(--color-body);
+    margin: 0;
+    white-space: pre-wrap;
+  }
 </style>

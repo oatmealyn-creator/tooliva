@@ -3,13 +3,18 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 ---
 
 <ToolLayout
-  title="Base64 Encoder &amp; Decoder"
+  title="Base64 Encoder & Decoder"
   description="Free online Base64 encoder and decoder — encode and decode Base64 strings instantly. Fast, private, client-side Base64 conversion tool."
   keywords="base64 encoder, base64 decoder, base64 encode, base64 decode, base64 converter, online base64 encoder, free base64 decoder, base64 tool"
 >
   <div class="tool-header-row">
     <label for="input" class="sr-only">Text input</label>
-    <textarea id="input" class="input-area" placeholder="Enter text to encode or decode..." spellcheck="false" autofocus></textarea>
+    <textarea
+      id="input"
+      class="input-area"
+      placeholder="Enter text to encode or decode..."
+      spellcheck="false"
+      autofocus></textarea>
     <button class="btn-secondary-sm try-sample" id="btn-sample">Try sample</button>
   </div>
 
@@ -29,7 +34,12 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   <div id="error" class="error-msg" role="alert" hidden></div>
 
   <div class="output-area">
-    <pre id="output" class="output-content" aria-label="Base64 result" data-placeholder="Encoded or decoded result will appear here..."></pre>
+    <pre
+      id="output"
+      class="output-content"
+      aria-label="Base64 result"
+      data-placeholder="Encoded or decoded result will appear here...">
+    </pre>
   </div>
 </ToolLayout>
 
@@ -71,14 +81,24 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
 
   function doEncode() {
     const raw = input.value;
-    if (!raw) { errorEl.textContent = 'Please enter text to encode.'; errorEl.hidden = false; output.textContent = ''; return; }
+    if (!raw) {
+      errorEl.textContent = 'Please enter text to encode.';
+      errorEl.hidden = false;
+      output.textContent = '';
+      return;
+    }
     errorEl.hidden = true;
     output.textContent = encode(raw);
   }
 
   function doDecode() {
     const raw = input.value;
-    if (!raw) { errorEl.textContent = 'Please enter Base64 to decode.'; errorEl.hidden = false; output.textContent = ''; return; }
+    if (!raw) {
+      errorEl.textContent = 'Please enter Base64 to decode.';
+      errorEl.hidden = false;
+      output.textContent = '';
+      return;
+    }
     errorEl.hidden = true;
     const result = decode(raw);
     if (result === null) {
@@ -93,12 +113,18 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   function copyOutput() {
     const text = output.textContent;
     if (!text) return;
-    navigator.clipboard.writeText(text).then(() => {
-      const orig = copyBtn.textContent || '';
-      copyBtn.textContent = 'Copied ✓';
-      copyBtn.classList.add('btn-copied');
-      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
-    }).catch(() => {});
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        const orig = copyBtn.textContent || '';
+        copyBtn.textContent = 'Copied ✓';
+        copyBtn.classList.add('btn-copied');
+        setTimeout(() => {
+          copyBtn.textContent = orig;
+          copyBtn.classList.remove('btn-copied');
+        }, 1500);
+      })
+      .catch(() => {});
   }
 
   function clearAll() {
@@ -114,8 +140,13 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doEncode(); }
-    if (e.key === 'Escape') { clearAll(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      doEncode();
+    }
+    if (e.key === 'Escape') {
+      clearAll();
+    }
   }
 
   function mount() {
