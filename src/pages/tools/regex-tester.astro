@@ -14,7 +14,15 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
         <span class="pattern-slash">/</span>
         <input id="pattern" class="pattern-input" placeholder="[a-z]+" value="\w+" />
         <span class="pattern-slash">/</span>
-        <input id="flags" class="flags-input" placeholder="gim" value="gm" maxlength="5" title="Regex flags" />
+        <input id="flags" class="flags-input" value="gm" hidden />
+      </div>
+      <div class="flags-toggles">
+        <button class="flag-btn active" data-flag="g">g (global)</button>
+        <button class="flag-btn active" data-flag="m">m (multiline)</button>
+        <button class="flag-btn" data-flag="i">i (case-insensitive)</button>
+        <button class="flag-btn" data-flag="s">s (dotall)</button>
+        <button class="flag-btn" data-flag="u">u (unicode)</button>
+        <button class="flag-btn" data-flag="y">y (sticky)</button>
       </div>
     </div>
   </div>
@@ -94,7 +102,7 @@ HELLO`;
 
   function clearAll() {
     pattern.value = '';
-    flags.value = '';
+    setFlags('');
     testInput.value = '';
     errorEl.hidden = true;
     resultArea.hidden = true;
@@ -102,10 +110,32 @@ HELLO`;
 
   function loadSample() {
     pattern.value = '\\b\\w+@\\w+\\.\\w+\\b';
-    flags.value = 'gm';
+    setFlags('gm');
     testInput.value = sampleText;
     errorEl.hidden = true;
     resultArea.hidden = true;
+  }
+
+  function setFlags(flg: string) {
+    flags.value = flg;
+    document.querySelectorAll('.flag-btn').forEach(btn => {
+      const f = (btn as HTMLElement).dataset.flag!;
+      btn.classList.toggle('active', flg.includes(f));
+    });
+  }
+
+  function toggleFlag(e: Event) {
+    const btn = e.currentTarget as HTMLElement;
+    const f = btn.dataset.flag!;
+    let flg = flags.value;
+    if (flg.includes(f)) {
+      flg = flg.replace(f, '');
+      btn.classList.remove('active');
+    } else {
+      flg += f;
+      btn.classList.add('active');
+    }
+    flags.value = flg;
   }
 
   function handleKeydown(e: KeyboardEvent) {
@@ -118,6 +148,8 @@ HELLO`;
     document.getElementById('btn-test')!.addEventListener('click', testRegex);
     document.getElementById('btn-clear')!.addEventListener('click', clearAll);
     document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+    document.querySelectorAll('.flag-btn').forEach(btn => btn.addEventListener('click', toggleFlag));
+    setFlags(flags.value);
   }
 
   mount();
@@ -138,6 +170,10 @@ HELLO`;
   .input-area.monospace { font-family: var(--font-geist-mono); }
   .input-area:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
   .input-area::placeholder { color: var(--color-mute); }
+  .flags-toggles { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); margin-top: var(--spacing-xs); }
+  .flag-btn { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); padding: 4px 10px; background-color: var(--color-canvas); color: var(--color-body); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-pill); cursor: pointer; transition: all 0.15s ease; }
+  .flag-btn:hover { border-color: var(--color-hairline-strong); }
+  .flag-btn.active { background-color: var(--color-primary); color: var(--color-on-primary); border-color: var(--color-primary); }
   .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
   .shortcut-hint { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); }
   @media (min-width: 640px) { .shortcut-hint { margin-left: auto; } }
