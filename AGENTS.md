@@ -3,7 +3,7 @@
 ## Stack
 - Framework: Astro v6.4 (static output)
 - Styling: Tailwind CSS v4 with custom CSS in `src/styles/globals.css`
-- Hosting: Cloudflare Pages (via `@astrojs/cloudflare`)
+- Hosting: Vercel (static)
 - Icons/Fonts: Geist Variable, Geist Mono
 - Language: TypeScript (strict mode)
 - Package manager: npm

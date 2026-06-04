@@ -31,3 +31,5 @@ page_output.txt
 
 # jetbrains setting folder
 .idea/
+
+.vercel
