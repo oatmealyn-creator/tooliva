@@ -14,7 +14,7 @@ module.exports = {
     'prettier',
   ],
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': 'off',
   },
   overrides: [
     {
