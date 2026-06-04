@@ -2,10 +2,17 @@ module.exports = {
   root: true,
   env: { browser: true, es2021: true, node: true },
   parser: '@typescript-eslint/parser',
-  parserOptions: {
-    sourceType: 'module',
+  parserOptions: { sourceType: 'module', ecmaVersion: 2022 },
+  plugins: ['@typescript-eslint', 'prettier', 'astro'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:astro/recommended',
+    'plugin:prettier/recommended',
+  ],
+  rules: {
+    'prettier/prettier': 'error',
   },
-  plugins: ['@typescript-eslint', 'prettier'],
   overrides: [
     {
       files: ['**/*.astro'],
@@ -16,19 +23,5 @@ module.exports = {
       },
     },
   ],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:astro/recommended',
-    'prettier',
-  ],
-  rules: {
-    'prettier/prettier': 'off',
-  },
-  overrides: [
-    {
-      files: ['*.astro'],
-      processor: 'astro/astro',
-    },
-  ],
+  ignorePatterns: ['dist/', 'node_modules/', 'public/'],
 };
