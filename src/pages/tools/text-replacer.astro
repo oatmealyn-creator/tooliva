@@ -84,12 +84,12 @@ hello is case-sensitive unless you toggle that option.`;
       if (regexMode.checked) {
         const flags = (globalMode.checked ? 'g' : '') + (caseSensitive.checked ? '' : 'i');
         const regex = new RegExp(find, flags);
-        result = text.replace(regex, (match) => { count++; return replace; });
+        result = text.replace(regex, () => { count++; return replace; });
       } else {
         const escaped = find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const flags = (globalMode.checked ? 'g' : '') + (caseSensitive.checked ? '' : 'i');
         const regex = new RegExp(escaped, flags);
-        result = text.replace(regex, (match) => { count++; return replace; });
+        result = text.replace(regex, () => { count++; return replace; });
       }
       output.textContent = result;
       replaceStats.textContent = count + ' replacement' + (count !== 1 ? 's' : '') + ' made';

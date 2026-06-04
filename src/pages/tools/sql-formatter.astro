@@ -43,8 +43,6 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     let s = sql.trim();
     if (!s) return s;
 
-    const joined = majorKeywords.join('|');
-    const subbed = subKeywords.join('|');
     const allKW = [...majorKeywords, ...subKeywords].sort((a, b) => b.length - a.length);
     const pattern = new RegExp('\\b(' + allKW.map(k => k.replace(/ /g, '\\s+')).join('|') + ')\\b', 'gi');
 
@@ -62,7 +60,6 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
       const t = tokens[i];
       const upper = t.toUpperCase();
       const combined = (i < tokens.length - 1) ? upper + ' ' + tokens[i + 1].toUpperCase() : '';
-      const combined3 = (i < tokens.length - 2) ? upper + ' ' + tokens[i + 1].toUpperCase() + ' ' + tokens[i + 2].toUpperCase() : '';
 
       const isMajor = majorKeywords.some(k => {
         const kc = k.replace(/ /g, '\\s+');
