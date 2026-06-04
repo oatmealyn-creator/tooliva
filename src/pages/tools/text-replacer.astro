@@ -1,0 +1,173 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout
+  title="Text Replacer"
+  description="Free online text replacer — find and replace text with optional regex support. Fast, client-side find and replace tool."
+  keywords="text replacer, find and replace, find replace text, text replace tool, regex replace, string replacer, find and replace online"
+>
+  <div class="tool-header-row">
+    <label for="input" class="sr-only">Text input</label>
+    <textarea id="input" class="input-area" placeholder="Paste your text here..." spellcheck="false" autofocus></textarea>
+    <button class="btn-secondary-sm try-sample" id="btn-sample">Try sample</button>
+  </div>
+
+  <div class="replace-controls">
+    <div class="field-row">
+      <label class="field-label" for="find">Find</label>
+      <input id="find" class="field-input monospace" placeholder="Text to find" />
+    </div>
+    <div class="field-row">
+      <label class="field-label" for="replace">Replace with</label>
+      <input id="replace" class="field-input monospace" placeholder="Replacement text" />
+    </div>
+    <div class="options-row">
+      <label class="checkbox-label">
+        <input type="checkbox" id="regex-mode" class="checkbox-input" />
+        Regex mode
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="case-sensitive" class="checkbox-input" checked />
+        Case sensitive
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="global-mode" class="checkbox-input" checked />
+        Replace all
+      </label>
+    </div>
+  </div>
+
+  <div class="button-row">
+    <button class="btn-primary" id="btn-replace">Replace</button>
+    <button class="btn-secondary" id="btn-copy">Copy</button>
+    <button class="btn-secondary" id="btn-clear">Clear</button>
+    <span class="shortcut-hint" aria-live="polite">Ctrl+Enter to replace</span>
+  </div>
+
+  <div id="error" class="error-msg" role="alert" hidden></div>
+
+  <div id="replace-stats" class="replace-stats" hidden></div>
+
+  <div class="output-area">
+    <pre id="output" class="output-content" aria-label="Replaced text" data-placeholder="Replaced text will appear here..."></pre>
+  </div>
+</ToolLayout>
+
+<script>
+  const input = document.getElementById('input') as HTMLTextAreaElement;
+  const findInput = document.getElementById('find') as HTMLInputElement;
+  const replaceInput = document.getElementById('replace') as HTMLInputElement;
+  const output = document.getElementById('output') as HTMLPreElement;
+  const errorEl = document.getElementById('error') as HTMLDivElement;
+  const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
+  const regexMode = document.getElementById('regex-mode') as HTMLInputElement;
+  const caseSensitive = document.getElementById('case-sensitive') as HTMLInputElement;
+  const globalMode = document.getElementById('global-mode') as HTMLInputElement;
+  const replaceStats = document.getElementById('replace-stats') as HTMLDivElement;
+
+  const sample = `Hello world! This is a sample text.
+Hello again! Replace "Hello" with something else.
+The word "world" appears here too.
+hello is case-sensitive unless you toggle that option.`;
+
+  function doReplace() {
+    const text = input.value;
+    const find = findInput.value;
+    const replace = replaceInput.value;
+    if (!text) { errorEl.textContent = 'Please enter text to search in.'; errorEl.hidden = false; output.textContent = ''; replaceStats.hidden = true; return; }
+    if (!find) { errorEl.textContent = 'Please enter text to find.'; errorEl.hidden = false; output.textContent = ''; replaceStats.hidden = true; return; }
+    errorEl.hidden = true;
+    try {
+      let result: string;
+      let count = 0;
+      if (regexMode.checked) {
+        const flags = (globalMode.checked ? 'g' : '') + (caseSensitive.checked ? '' : 'i');
+        const regex = new RegExp(find, flags);
+        result = text.replace(regex, (match) => { count++; return replace; });
+      } else {
+        const escaped = find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const flags = (globalMode.checked ? 'g' : '') + (caseSensitive.checked ? '' : 'i');
+        const regex = new RegExp(escaped, flags);
+        result = text.replace(regex, (match) => { count++; return replace; });
+      }
+      output.textContent = result;
+      replaceStats.textContent = count + ' replacement' + (count !== 1 ? 's' : '') + ' made';
+      replaceStats.hidden = false;
+    } catch (e) {
+      errorEl.textContent = 'Invalid regex: ' + (e as Error).message;
+      errorEl.hidden = false;
+      output.textContent = '';
+      replaceStats.hidden = true;
+    }
+  }
+
+  function copyOutput() {
+    const text = output.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = copyBtn.textContent || '';
+      copyBtn.textContent = 'Copied \u2713';
+      copyBtn.classList.add('btn-copied');
+      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
+    }).catch(() => {});
+  }
+
+  function clearAll() {
+    input.value = '';
+    findInput.value = '';
+    replaceInput.value = '';
+    output.textContent = '';
+    errorEl.hidden = true;
+    replaceStats.hidden = true;
+  }
+
+  function loadSample() {
+    input.value = sample;
+    findInput.value = 'Hello';
+    replaceInput.value = 'Hi';
+    output.textContent = '';
+    errorEl.hidden = true;
+    replaceStats.hidden = true;
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doReplace(); }
+    if (e.key === 'Escape') { clearAll(); }
+  }
+
+  function mount() {
+    input.addEventListener('keydown', handleKeydown);
+    document.getElementById('btn-replace')!.addEventListener('click', doReplace);
+    document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+    document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+  }
+  mount();
+  document.addEventListener('astro:before-swap', () => input.removeEventListener('keydown', handleKeydown));
+</script>
+
+<style>
+  .tool-header-row { position: relative; }
+  .try-sample { position: absolute; top: var(--spacing-sm); right: var(--spacing-sm); z-index: 1; }
+  .input-area { width: 100%; min-height: 150px; padding: var(--spacing-md); font-size: var(--font-size-body-md); line-height: 1.6; background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); resize: vertical; box-sizing: border-box; }
+  .input-area:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .input-area::placeholder { color: var(--color-mute); }
+  .replace-controls { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin: var(--spacing-md) 0; }
+  @media (max-width: 640px) { .replace-controls { grid-template-columns: 1fr; } }
+  .field-row { display: flex; flex-direction: column; gap: var(--spacing-xs); }
+  .field-label { font-size: var(--font-size-body-sm); font-weight: 500; color: var(--color-ink); }
+  .field-input { padding: 10px 12px; font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); box-sizing: border-box; width: 100%; }
+  .field-input.monospace { font-family: var(--font-geist-mono); }
+  .field-input:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .options-row { display: flex; flex-wrap: wrap; gap: var(--spacing-md); margin-top: var(--spacing-sm); }
+  .checkbox-label { display: inline-flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-body-sm); color: var(--color-body); cursor: pointer; }
+  .checkbox-input { width: 16px; height: 16px; accent-color: var(--color-primary); cursor: pointer; }
+  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
+  .shortcut-hint { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); }
+  @media (min-width: 640px) { .shortcut-hint { margin-left: auto; } }
+  .error-msg { font-family: var(--font-geist-mono); font-size: var(--font-size-body-sm); color: var(--color-error); background-color: var(--color-error-soft); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-md); }
+  .replace-stats { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-success); margin-bottom: var(--spacing-md); }
+  .output-area { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: 1rem; min-height: 150px; max-height: 600px; overflow-y: auto; }
+  .output-content { font-family: var(--font-geist); font-size: var(--font-size-body-md); line-height: 1.6; color: var(--color-ink); margin: 0; white-space: pre-wrap; }
+</style>

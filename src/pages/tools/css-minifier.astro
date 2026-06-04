@@ -1,0 +1,153 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout
+  title="CSS Minifier"
+  description="Free online CSS minifier — minify and compress CSS stylesheets instantly. Fast, client-side CSS compression tool."
+  keywords="css minifier, css minify, css compressor, css compression tool, minify css online, free css minifier, css optimizer"
+>
+  <div class="tool-header-row">
+    <label for="input" class="sr-only">CSS input</label>
+    <textarea id="input" class="input-area monospace" placeholder="Paste your CSS here..." spellcheck="false" autofocus></textarea>
+    <button class="btn-secondary-sm try-sample" id="btn-sample">Try sample</button>
+  </div>
+
+  <div class="stats-bar" id="stats" hidden>
+    <span id="before-size" class="stat"></span>
+    <span id="after-size" class="stat"></span>
+    <span id="saved" class="stat stat-saved"></span>
+  </div>
+
+  <div class="button-row">
+    <button class="btn-primary" id="btn-minify">Minify</button>
+    <button class="btn-secondary" id="btn-copy">Copy</button>
+    <button class="btn-secondary" id="btn-clear">Clear</button>
+    <span class="shortcut-hint" aria-live="polite">Ctrl+Enter to minify</span>
+  </div>
+
+  <div id="error" class="error-msg" role="alert" hidden></div>
+
+  <div class="output-area">
+    <pre id="output" class="output-content" aria-label="Minified CSS" data-placeholder="Minified CSS will appear here..."></pre>
+  </div>
+</ToolLayout>
+
+<script>
+  const input = document.getElementById('input') as HTMLTextAreaElement;
+  const output = document.getElementById('output') as HTMLPreElement;
+  const errorEl = document.getElementById('error') as HTMLDivElement;
+  const copyBtn = document.getElementById('btn-copy') as HTMLButtonElement;
+  const stats = document.getElementById('stats') as HTMLDivElement;
+  const beforeSize = document.getElementById('before-size') as HTMLSpanElement;
+  const afterSize = document.getElementById('after-size') as HTMLSpanElement;
+  const saved = document.getElementById('saved') as HTMLSpanElement;
+
+  const sample = `.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.container .title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.container .subtitle {
+  font-size: 16px;
+  color: #666;
+}`;
+
+  function minify(css: string): string {
+    return css
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\s*([{}:;,])\s*/g, '$1')
+      .replace(/;}/g, '}')
+      .replace(/[\n\r]+/g, '')
+      .replace(/\s+/g, ' ')
+      .replace(/\s*([>+~])\s*/g, '$1')
+      .trim();
+  }
+
+  function formatBytes(bytes: number): string {
+    if (bytes < 1024) return bytes + ' B';
+    return (bytes / 1024).toFixed(1) + ' KB';
+  }
+
+  function doMinify() {
+    const raw = input.value.trim();
+    if (!raw) { errorEl.textContent = 'Please enter CSS to minify.'; errorEl.hidden = false; output.textContent = ''; stats.hidden = true; return; }
+    errorEl.hidden = true;
+    const result = minify(raw);
+    output.textContent = result;
+    const bLen = new TextEncoder().encode(raw).length;
+    const aLen = new TextEncoder().encode(result).length;
+    beforeSize.textContent = 'Before: ' + formatBytes(bLen);
+    afterSize.textContent = 'After: ' + formatBytes(aLen);
+    saved.textContent = 'Saved: ' + (bLen - aLen > 0 ? formatBytes(bLen - aLen) : '0 B') + ' (' + ((1 - aLen / bLen) * 100).toFixed(1) + '%)';
+    stats.hidden = false;
+  }
+
+  function copyOutput() {
+    const text = output.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = copyBtn.textContent || '';
+      copyBtn.textContent = 'Copied \u2713';
+      copyBtn.classList.add('btn-copied');
+      setTimeout(() => { copyBtn.textContent = orig; copyBtn.classList.remove('btn-copied'); }, 1500);
+    }).catch(() => {});
+  }
+
+  function clearAll() {
+    input.value = '';
+    output.textContent = '';
+    errorEl.hidden = true;
+    stats.hidden = true;
+  }
+
+  function loadSample() {
+    input.value = sample;
+    output.textContent = '';
+    errorEl.hidden = true;
+    stats.hidden = true;
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doMinify(); }
+    if (e.key === 'Escape') { clearAll(); }
+  }
+
+  function mount() {
+    input.addEventListener('keydown', handleKeydown);
+    document.getElementById('btn-minify')!.addEventListener('click', doMinify);
+    document.getElementById('btn-copy')!.addEventListener('click', copyOutput);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+    document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+  }
+
+  mount();
+  document.addEventListener('astro:before-swap', () => input.removeEventListener('keydown', handleKeydown));
+</script>
+
+<style>
+  .tool-header-row { position: relative; }
+  .try-sample { position: absolute; top: var(--spacing-sm); right: var(--spacing-sm); z-index: 1; }
+  .input-area { width: 100%; min-height: 200px; padding: var(--spacing-md); font-size: var(--font-size-code); line-height: 1.5; background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); resize: vertical; box-sizing: border-box; }
+  .input-area.monospace { font-family: var(--font-geist-mono); }
+  .input-area:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .input-area::placeholder { color: var(--color-mute); }
+  .stats-bar { display: flex; gap: var(--spacing-lg); margin: var(--spacing-sm) 0; flex-wrap: wrap; }
+  .stat { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-body); }
+  .stat-saved { color: var(--color-success); }
+  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
+  .shortcut-hint { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); }
+  @media (min-width: 640px) { .shortcut-hint { margin-left: auto; } }
+  .error-msg { font-family: var(--font-geist-mono); font-size: var(--font-size-body-sm); color: var(--color-error); background-color: var(--color-error-soft); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-md); }
+  .output-area { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: 1rem; min-height: 200px; max-height: 600px; overflow-y: auto; }
+  .output-content { font-family: var(--font-geist-mono); font-size: var(--font-size-code); line-height: 1.5; color: var(--color-ink); margin: 0; white-space: pre-wrap; word-break: break-all; }
+</style>

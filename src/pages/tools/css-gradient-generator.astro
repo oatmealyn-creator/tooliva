@@ -1,0 +1,142 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout
+  title="CSS Gradient Generator"
+  description="Free online CSS gradient generator — create beautiful CSS gradients with a visual builder. Fast, client-side gradient tool for designers."
+  keywords="css gradient generator, gradient generator, css gradient, gradient maker, linear gradient, radial gradient, css gradient tool, gradient builder"
+>
+  <div class="gradient-controls">
+    <div class="field-row">
+      <label class="field-label" for="direction">Type</label>
+      <select id="type" class="field-select">
+        <option value="linear">Linear</option>
+        <option value="radial">Radial</option>
+      </select>
+    </div>
+
+    <div class="field-row" id="direction-row">
+      <label class="field-label" for="direction">Direction</label>
+      <select id="direction" class="field-select">
+        <option value="to bottom">Top to Bottom</option>
+        <option value="to top">Bottom to Top</option>
+        <option value="to right">Left to Right</option>
+        <option value="to left">Right to Left</option>
+        <option value="to bottom right">Top-Left to Bottom-Right</option>
+        <option value="to bottom left">Top-Right to Bottom-Left</option>
+        <option value="135deg">Angle 135&deg;</option>
+        <option value="45deg">Angle 45&deg;</option>
+      </select>
+    </div>
+
+    <div class="color-stops">
+      <div class="color-stop-row">
+        <input type="color" class="color-picker" id="color1" value="#0070f3" />
+        <input class="color-hex" id="hex1" value="#0070f3" />
+        <span class="stop-sep">to</span>
+        <input type="color" class="color-picker" id="color2" value="#7928ca" />
+        <input class="color-hex" id="hex2" value="#7928ca" />
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-area" id="preview"></div>
+
+  <div class="button-row">
+    <button class="btn-primary" id="btn-copy-css">Copy CSS</button>
+    <button class="btn-secondary" id="btn-random">Random</button>
+  </div>
+
+  <div class="css-output-area">
+    <label class="field-label">CSS code</label>
+    <pre id="css-output" class="css-code monospace"></pre>
+  </div>
+</ToolLayout>
+
+<script>
+  const typeSelect = document.getElementById('type') as HTMLSelectElement;
+  const directionSelect = document.getElementById('direction') as HTMLSelectElement;
+  const directionRow = document.getElementById('direction-row') as HTMLDivElement;
+  const color1 = document.getElementById('color1') as HTMLInputElement;
+  const color2 = document.getElementById('color2') as HTMLInputElement;
+  const hex1 = document.getElementById('hex1') as HTMLInputElement;
+  const hex2 = document.getElementById('hex2') as HTMLInputElement;
+  const preview = document.getElementById('preview') as HTMLDivElement;
+  const cssOutput = document.getElementById('css-output') as HTMLPreElement;
+
+  function componentToHex(c: number): string {
+    const hex = Math.round(c).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  }
+
+  function randomHex(): string {
+    return '#' + Array.from({ length: 3 }, () => componentToHex(Math.random() * 255)).join('');
+  }
+
+  function render() {
+    const type = typeSelect.value;
+    const dir = directionSelect.value;
+    const c1 = color1.value;
+    const c2 = color2.value;
+    hex1.value = c1;
+    hex2.value = c2;
+    let gradient: string;
+    if (type === 'radial') {
+      gradient = `radial-gradient(circle, ${c1}, ${c2})`;
+    } else {
+      gradient = `linear-gradient(${dir}, ${c1}, ${c2})`;
+    }
+    preview.style.background = gradient;
+    cssOutput.textContent = `background: ${gradient};`;
+  }
+
+  function copyCSS() {
+    const text = cssOutput.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).catch(() => {});
+  }
+
+  function randomize() {
+    color1.value = randomHex();
+    color2.value = randomHex();
+    const dirs = ['to bottom', 'to top', 'to right', 'to left', 'to bottom right', 'to bottom left', '135deg', '45deg'];
+    directionSelect.value = dirs[Math.floor(Math.random() * dirs.length)];
+    render();
+  }
+
+  function mount() {
+    typeSelect.addEventListener('change', () => {
+      directionRow.style.display = typeSelect.value === 'radial' ? 'none' : 'flex';
+      render();
+    });
+    directionSelect.addEventListener('change', render);
+    color1.addEventListener('input', render);
+    color2.addEventListener('input', render);
+    hex1.addEventListener('input', () => { color1.value = hex1.value; render(); });
+    hex2.addEventListener('input', () => { color2.value = hex2.value; render(); });
+    document.getElementById('btn-copy-css')!.addEventListener('click', copyCSS);
+    document.getElementById('btn-random')!.addEventListener('click', randomize);
+    render();
+  }
+  mount();
+</script>
+
+<style>
+  .gradient-controls { display: flex; flex-direction: column; gap: var(--spacing-md); margin-bottom: var(--spacing-md); }
+  .field-row { display: flex; flex-direction: column; gap: var(--spacing-xs); }
+  .field-label { font-size: var(--font-size-body-sm); font-weight: 500; color: var(--color-ink); }
+  .field-select { padding: 10px 12px; font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); cursor: pointer; }
+  .field-select:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .color-stops { margin-top: var(--spacing-sm); }
+  .color-stop-row { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; }
+  .color-picker { width: 44px; height: 44px; border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); cursor: pointer; padding: 0; background: none; }
+  .color-hex { width: 100px; padding: 8px 12px; font-family: var(--font-geist-mono); font-size: var(--font-size-body-md); background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); }
+  .color-hex:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .stop-sep { color: var(--color-mute); font-size: var(--font-size-body-sm); }
+  .preview-area { width: 100%; height: 200px; border-radius: var(--border-radius-md); border: 1px solid var(--color-hairline); margin-bottom: var(--spacing-md); }
+  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
+  .css-output-area { margin-top: var(--spacing-md); }
+  .css-code { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: var(--spacing-md); font-size: var(--font-size-code); line-height: 1.5; color: var(--color-ink); white-space: pre-wrap; word-break: break-all; min-height: 50px; margin: var(--spacing-xs) 0 0; }
+  .monospace { font-family: var(--font-geist-mono); }
+</style>

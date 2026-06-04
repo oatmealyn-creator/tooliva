@@ -1,0 +1,150 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout
+  title="Diff Checker"
+  description="Free online diff checker — compare two texts and highlight differences instantly. Fast, client-side text comparison tool."
+  keywords="diff checker, text diff, compare text, diff tool, text comparison, online diff checker, free diff tool, compare files online"
+>
+  <div class="diff-container">
+    <div class="diff-panel">
+      <label for="input-a" class="diff-label">Original</label>
+      <textarea id="input-a" class="input-area monospace" placeholder="Paste original text here..." spellcheck="false"></textarea>
+    </div>
+    <div class="diff-panel">
+      <label for="input-b" class="diff-label">Changed</label>
+      <textarea id="input-b" class="input-area monospace" placeholder="Paste changed text here..." spellcheck="false" autofocus></textarea>
+    </div>
+  </div>
+
+  <div class="button-row">
+    <button class="btn-primary" id="btn-diff">Compare</button>
+    <button class="btn-secondary" id="btn-clear">Clear</button>
+    <button class="btn-secondary-sm" id="btn-sample">Try sample</button>
+    <span class="shortcut-hint" aria-live="polite">Ctrl+Enter to compare</span>
+  </div>
+
+  <div id="error" class="error-msg" role="alert" hidden></div>
+
+  <div class="output-area" id="output-area" hidden>
+    <pre id="output" class="output-content" aria-label="Diff result"></pre>
+  </div>
+</ToolLayout>
+
+<script>
+  const inputA = document.getElementById('input-a') as HTMLTextAreaElement;
+  const inputB = document.getElementById('input-b') as HTMLTextAreaElement;
+  const output = document.getElementById('output') as HTMLPreElement;
+  const outputArea = document.getElementById('output-area') as HTMLDivElement;
+  const errorEl = document.getElementById('error') as HTMLDivElement;
+
+  const sampleA = `Hello world
+This is a test
+Foo bar baz
+Line four
+Line five`;
+  const sampleB = `Hello world
+This is a modified test
+Foo bar
+Line four
+Line five
+Extra line`;
+
+  function computeDiff(linesA: string[], linesB: string[]): string[][] {
+    const m = linesA.length, n = linesB.length;
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (linesA[i - 1] === linesB[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+        else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+    const result: string[][] = [];
+    let i = m, j = n;
+    while (i > 0 || j > 0) {
+      if (i > 0 && j > 0 && linesA[i - 1] === linesB[j - 1]) {
+        result.push([' ', linesA[i - 1]]);
+        i--; j--;
+      } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+        result.push(['+', linesB[j - 1]]);
+        j--;
+      } else {
+        result.push(['-', linesA[i - 1]]);
+        i--;
+      }
+    }
+    return result.reverse();
+  }
+
+  function doDiff() {
+    const a = inputA.value;
+    const b = inputB.value;
+    if (!a && !b) { errorEl.textContent = 'Please enter text in at least one field.'; errorEl.hidden = false; outputArea.hidden = true; return; }
+    errorEl.hidden = true;
+    const linesA = a.split('\n');
+    const linesB = b.split('\n');
+    const diff = computeDiff(linesA, linesB);
+    let html = '';
+    for (const [type, line] of diff) {
+      const cls = type === '+' ? 'diff-add' : type === '-' ? 'diff-remove' : 'diff-equal';
+      const prefix = type === '+' ? '+ ' : type === '-' ? '- ' : '  ';
+      html += `<div class="diff-line ${cls}"><span class="diff-prefix">${prefix}</span><span>${line}</span></div>`;
+    }
+    output.innerHTML = html;
+    outputArea.hidden = false;
+  }
+
+  function clearAll() {
+    inputA.value = '';
+    inputB.value = '';
+    output.innerHTML = '';
+    errorEl.hidden = true;
+    outputArea.hidden = true;
+  }
+
+  function loadSample() {
+    inputA.value = sampleA;
+    inputB.value = sampleB;
+    output.innerHTML = '';
+    errorEl.hidden = true;
+    outputArea.hidden = true;
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doDiff(); }
+    if (e.key === 'Escape') { clearAll(); }
+  }
+
+  function mount() {
+    document.addEventListener('keydown', handleKeydown);
+    document.getElementById('btn-diff')!.addEventListener('click', doDiff);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+    document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+  }
+
+  mount();
+  document.addEventListener('astro:before-swap', () => document.removeEventListener('keydown', handleKeydown));
+</script>
+
+<style>
+  .diff-container { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md); }
+  @media (max-width: 640px) { .diff-container { grid-template-columns: 1fr; } }
+  .diff-panel { display: flex; flex-direction: column; gap: var(--spacing-xs); }
+  .diff-label { font-size: var(--font-size-body-sm); font-weight: 500; color: var(--color-ink); }
+  .input-area { width: 100%; min-height: 200px; padding: var(--spacing-md); font-size: var(--font-size-code); line-height: 1.5; background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); resize: vertical; box-sizing: border-box; }
+  .input-area.monospace { font-family: var(--font-geist-mono); }
+  .input-area:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .input-area::placeholder { color: var(--color-mute); }
+  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
+  .shortcut-hint { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); }
+  @media (min-width: 640px) { .shortcut-hint { margin-left: auto; } }
+  .error-msg { font-family: var(--font-geist-mono); font-size: var(--font-size-body-sm); color: var(--color-error); background-color: var(--color-error-soft); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-md); }
+  .output-area { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: 0; min-height: 100px; max-height: 600px; overflow-y: auto; }
+  .output-content { font-family: var(--font-geist-mono); font-size: var(--font-size-code); line-height: 1.5; margin: 0; }
+  .diff-line { display: flex; padding: 2px 12px; }
+  .diff-prefix { width: 24px; flex-shrink: 0; }
+  .diff-add { background-color: #ccffcc; color: #006600; }
+  .diff-remove { background-color: #ffcccc; color: #cc0000; }
+  .diff-equal { color: var(--color-body); }
+</style>

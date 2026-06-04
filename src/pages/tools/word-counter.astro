@@ -1,0 +1,104 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout
+  title="Word Counter"
+  description="Free online word counter — count characters, words, sentences, and paragraphs instantly. Fast, client-side text analysis tool."
+  keywords="word counter, character counter, word count, character count, letter counter, word counter online, text counter, free word counter"
+>
+  <div class="tool-header-row">
+    <label for="input" class="sr-only">Text input</label>
+    <textarea id="input" class="input-area" placeholder="Paste or type your text here..." spellcheck="true" autofocus></textarea>
+  </div>
+
+  <div class="button-row">
+    <button class="btn-secondary" id="btn-clear">Clear</button>
+    <button class="btn-secondary-sm" id="btn-sample">Try sample</button>
+  </div>
+
+  <div class="counts-grid" id="counts">
+    <div class="count-card">
+      <span class="count-number" id="char-count">0</span>
+      <span class="count-label">Characters</span>
+      <span class="count-sub" id="char-no-space">0 (no spaces)</span>
+    </div>
+    <div class="count-card">
+      <span class="count-number" id="word-count">0</span>
+      <span class="count-label">Words</span>
+    </div>
+    <div class="count-card">
+      <span class="count-number" id="sent-count">0</span>
+      <span class="count-label">Sentences</span>
+    </div>
+    <div class="count-card">
+      <span class="count-number" id="para-count">0</span>
+      <span class="count-label">Paragraphs</span>
+    </div>
+    <div class="count-card">
+      <span class="count-number" id="line-count">0</span>
+      <span class="count-label">Lines</span>
+    </div>
+    <div class="count-card">
+      <span class="count-number" id="read-time">0</span>
+      <span class="count-label">Read time</span>
+      <span class="count-sub">minutes</span>
+    </div>
+  </div>
+</ToolLayout>
+
+<script>
+  const input = document.getElementById('input') as HTMLTextAreaElement;
+  const sample = `Tooliva is a collection of free online developer tools.\n\nWe provide utilities like JSON formatters, JWT decoders, and Base64 encoders. All tools run entirely in your browser.\n\nNo data leaves your machine. No accounts needed. Just fast, private tools for developers.\n\nBookmark us and come back any time you need reliable utilities.`;
+
+  function update() {
+    const text = input.value;
+    const chars = text.length;
+    const charsNoSpace = text.replace(/\s/g, '').length;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const sents = text ? text.split(/[.!?]+\s*/).filter(s => s.trim().length > 0).length : 0;
+    const paras = text ? text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length : 0;
+    const lines = text ? text.split('\n').length : (text.length > 0 ? 1 : 0);
+    const readTime = Math.max(1, Math.round(words / 200));
+
+    document.getElementById('char-count')!.textContent = String(chars);
+    document.getElementById('char-no-space')!.textContent = charsNoSpace + ' (no spaces)';
+    document.getElementById('word-count')!.textContent = String(words);
+    document.getElementById('sent-count')!.textContent = String(sents);
+    document.getElementById('para-count')!.textContent = String(paras);
+    document.getElementById('line-count')!.textContent = String(lines);
+    document.getElementById('read-time')!.textContent = String(readTime) + ' min';
+  }
+
+  function clearAll() {
+    input.value = '';
+    update();
+  }
+
+  function loadSample() {
+    input.value = sample;
+    update();
+  }
+
+  function mount() {
+    input.addEventListener('input', update);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+    document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+  }
+  mount();
+  document.addEventListener('astro:before-swap', () => input.removeEventListener('input', update));
+</script>
+
+<style>
+  .tool-header-row { position: relative; }
+  .input-area { width: 100%; min-height: 200px; padding: var(--spacing-md); font-size: var(--font-size-body-md); line-height: 1.6; background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); resize: vertical; box-sizing: border-box; }
+  .input-area:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .input-area::placeholder { color: var(--color-mute); }
+  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
+  .counts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); }
+  @media (max-width: 640px) { .counts-grid { grid-template-columns: repeat(2, 1fr); } }
+  .count-card { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: var(--spacing-lg); text-align: center; }
+  .count-number { display: block; font-size: var(--font-size-display-lg); font-weight: 600; color: var(--color-ink); line-height: 1.2; }
+  .count-label { display: block; font-size: var(--font-size-body-sm); color: var(--color-body); margin-top: var(--spacing-xs); }
+  .count-sub { display: block; font-size: var(--font-size-caption); color: var(--color-mute); margin-top: 2px; }
+</style>

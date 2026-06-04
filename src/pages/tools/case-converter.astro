@@ -1,0 +1,177 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout
+  title="Case Converter"
+  description="Free online case converter — convert text between camelCase, snake_case, kebab-case, PascalCase, and more. Fast, client-side text case tool."
+  keywords="case converter, camel case converter, snake case converter, kebab case converter, text case converter, uppercase, lowercase, title case"
+>
+  <div class="tool-header-row">
+    <label for="input" class="sr-only">Text input</label>
+    <textarea id="input" class="input-area" placeholder="Enter text to convert..." spellcheck="false" autofocus></textarea>
+    <button class="btn-secondary-sm try-sample" id="btn-sample">Try sample</button>
+  </div>
+
+  <div class="button-row">
+    <button class="btn-primary" id="btn-convert">Convert</button>
+    <button class="btn-secondary" id="btn-clear">Clear</button>
+    <span class="shortcut-hint" aria-live="polite">Ctrl+Enter to convert</span>
+  </div>
+
+  <div id="error" class="error-msg" role="alert" hidden></div>
+
+  <div id="results" class="cases-grid" hidden>
+    <div class="case-card">
+      <span class="case-label">camelCase</span>
+      <code class="case-value" id="camel-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="camel-value">Copy</button>
+    </div>
+    <div class="case-card">
+      <span class="case-label">PascalCase</span>
+      <code class="case-value" id="pascal-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="pascal-value">Copy</button>
+    </div>
+    <div class="case-card">
+      <span class="case-label">snake_case</span>
+      <code class="case-value" id="snake-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="snake-value">Copy</button>
+    </div>
+    <div class="case-card">
+      <span class="case-label">kebab-case</span>
+      <code class="case-value" id="kebab-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="kebab-value">Copy</button>
+    </div>
+    <div class="case-card">
+      <span class="case-label">UPPER CASE</span>
+      <code class="case-value" id="upper-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="upper-value">Copy</button>
+    </div>
+    <div class="case-card">
+      <span class="case-label">lower case</span>
+      <code class="case-value" id="lower-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="lower-value">Copy</button>
+    </div>
+    <div class="case-card">
+      <span class="case-label">Title Case</span>
+      <code class="case-value" id="title-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="title-value">Copy</button>
+    </div>
+    <div class="case-card">
+      <span class="case-label">CONSTANT_CASE</span>
+      <code class="case-value" id="constant-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="constant-value">Copy</button>
+    </div>
+    <div class="case-card">
+      <span class="case-label">dot.case</span>
+      <code class="case-value" id="dot-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="dot-value">Copy</button>
+    </div>
+    <div class="case-card">
+      <span class="case-label">Sentence case</span>
+      <code class="case-value" id="sentence-value"></code>
+      <button class="case-copy btn-secondary-sm" data-copy="sentence-value">Copy</button>
+    </div>
+  </div>
+</ToolLayout>
+
+<script>
+  const input = document.getElementById('input') as HTMLTextAreaElement;
+  const errorEl = document.getElementById('error') as HTMLDivElement;
+  const results = document.getElementById('results') as HTMLDivElement;
+
+  function splitWords(text: string): string[] {
+    const words: string[] = [];
+    const cleaned = text.replace(/[^a-zA-Z0-9\s_-]/g, ' ');
+    const parts = cleaned.split(/[\s_-]+/);
+    for (const part of parts) {
+      if (!part) continue;
+      const matches = part.match(/[A-Z]?[a-z0-9]+|[A-Z0-9]+/g);
+      if (matches) words.push(...matches);
+      else if (part) words.push(part);
+    }
+    return words.filter(w => w.length > 0);
+  }
+
+  function doConvert() {
+    const raw = input.value.trim();
+    if (!raw) { errorEl.textContent = 'Please enter text to convert.'; errorEl.hidden = false; results.hidden = true; return; }
+    errorEl.hidden = true;
+    const words = splitWords(raw);
+    if (words.length === 0) { errorEl.textContent = 'No words found to convert.'; errorEl.hidden = false; results.hidden = true; return; }
+
+    const camel = words[0].toLowerCase() + words.slice(1).map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join('');
+    const pascal = words.map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join('');
+    const snake = words.map(w => w.toLowerCase()).join('_');
+    const kebab = words.map(w => w.toLowerCase()).join('-');
+    const upper = raw.toUpperCase();
+    const lower = raw.toLowerCase();
+    const title = words.map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join(' ') + (raw.match(/[.!?]$/) ? '' : '');
+    const constant = words.map(w => w.toUpperCase()).join('_');
+    const dot = words.map(w => w.toLowerCase()).join('.');
+    const sentence = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase().replace(/\.(\s+\w)/g, (_, c) => '. ' + c.toUpperCase().trim());
+
+    document.getElementById('camel-value')!.textContent = camel;
+    document.getElementById('pascal-value')!.textContent = pascal;
+    document.getElementById('snake-value')!.textContent = snake;
+    document.getElementById('kebab-value')!.textContent = kebab;
+    document.getElementById('upper-value')!.textContent = upper;
+    document.getElementById('lower-value')!.textContent = lower;
+    document.getElementById('title-value')!.textContent = title;
+    document.getElementById('constant-value')!.textContent = constant;
+    document.getElementById('dot-value')!.textContent = dot;
+    document.getElementById('sentence-value')!.textContent = sentence;
+    results.hidden = false;
+  }
+
+  function clearAll() {
+    input.value = '';
+    errorEl.hidden = true;
+    results.hidden = true;
+  }
+
+  function loadSample() {
+    input.value = 'helloWorld example_text convert-this TOO';
+    doConvert();
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doConvert(); }
+    if (e.key === 'Escape') { clearAll(); }
+  }
+
+  function mount() {
+    input.addEventListener('keydown', handleKeydown);
+    document.getElementById('btn-convert')!.addEventListener('click', doConvert);
+    document.getElementById('btn-clear')!.addEventListener('click', clearAll);
+    document.getElementById('btn-sample')!.addEventListener('click', loadSample);
+    document.querySelectorAll('.case-copy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = (btn as HTMLElement).dataset.copy!;
+        const text = document.getElementById(id)!.textContent || '';
+        navigator.clipboard.writeText(text).catch(() => {});
+      });
+    });
+  }
+
+  mount();
+  document.addEventListener('astro:before-swap', () => input.removeEventListener('keydown', handleKeydown));
+</script>
+
+<style>
+  .tool-header-row { position: relative; }
+  .try-sample { position: absolute; top: var(--spacing-sm); right: var(--spacing-sm); z-index: 1; }
+  .input-area { width: 100%; min-height: 120px; padding: var(--spacing-md); font-family: var(--font-geist-mono); font-size: var(--font-size-code); line-height: 1.5; background-color: var(--color-canvas); color: var(--color-ink); border: 1px solid var(--color-hairline); border-radius: var(--border-radius-sm); resize: vertical; box-sizing: border-box; }
+  .input-area:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .input-area::placeholder { color: var(--color-mute); }
+  .button-row { display: flex; gap: var(--spacing-sm); margin: var(--spacing-md) 0; align-items: center; flex-wrap: wrap; }
+  .shortcut-hint { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); }
+  @media (min-width: 640px) { .shortcut-hint { margin-left: auto; } }
+  .error-msg { font-family: var(--font-geist-mono); font-size: var(--font-size-body-sm); color: var(--color-error); background-color: var(--color-error-soft); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-md); }
+  .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); }
+  @media (max-width: 640px) { .cases-grid { grid-template-columns: 1fr; } }
+  .case-card { background-color: var(--color-canvas-soft-2); border-radius: var(--border-radius-md); border: 1px solid #00000014; padding: var(--spacing-md); display: flex; flex-direction: column; gap: var(--spacing-xs); }
+  .case-label { font-family: var(--font-geist-mono); font-size: var(--font-size-caption-mono); color: var(--color-mute); text-transform: uppercase; letter-spacing: 0.05em; }
+  .case-value { font-family: var(--font-geist-mono); font-size: var(--font-size-body-sm); color: var(--color-ink); word-break: break-all; }
+  .case-copy { align-self: flex-start; }
+</style>
