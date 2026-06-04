@@ -21,7 +21,11 @@ module.exports = {
       parserOptions: {
         parser: '@typescript-eslint/parser',
       },
+      rules: {
+        'prettier/prettier': 'off'
+      }
     },
+
   ],
   ignorePatterns: ['dist/', 'node_modules/', 'public/'],
 };
