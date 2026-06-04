@@ -33,5 +33,18 @@
     "prettier": "^3.8.3",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3"
-  }
+  },
+  "description": "```sh npm create astro@latest -- --template basics ```",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oatmealyn-creator/tooliva.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oatmealyn-creator/tooliva/issues"
+  },
+  "homepage": "https://github.com/oatmealyn-creator/tooliva#readme"
 }

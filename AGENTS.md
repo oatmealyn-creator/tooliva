@@ -1,6 +1,7 @@
 # Tooliva
 
 ## Stack
+
 - Framework: Astro v6.4 (static output)
 - Styling: Tailwind CSS v4 with custom CSS in `src/styles/globals.css`
 - Hosting: Vercel (static)
@@ -9,6 +10,7 @@
 - Package manager: npm
 
 ## Project structure
+
 - `src/pages/` — Astro routes (file-based routing)
 - `src/layouts/` — `MainLayout.astro` (global), `ToolLayout.astro` (tool pages, wraps MainLayout)
 - `src/components/` — reusable Astro components
@@ -17,6 +19,7 @@
 - `public/` — static assets (favicons, webmanifest)
 
 ## Conventions
+
 - Use `MainLayout` for top-level pages, `ToolLayout` for tool pages
 - Tools get their own route under `src/pages/tools/<slug>/index.astro`
 - All page scripts use `<script>` (not `is:inline`) for component-based JS
@@ -27,4 +30,5 @@
 - Dev server: `npm run dev`
 
 ## Design tokens
+
 All tokens live in the `@theme` block in `globals.css`. No inline magic values in components.
