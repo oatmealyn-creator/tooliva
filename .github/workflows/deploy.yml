@@ -1,0 +1,53 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+      - run: npx astro check --silent
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+
+  deploy-cloudflare:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+      - run: npx wrangler pages deploy dist/ --project-name tooliva
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  deploy-vercel:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+      - run: npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+
+

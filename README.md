@@ -1,46 +1,44 @@
-# Astro Starter Kit: Basics
+# Tooliva
+
+A collection of fast, clean developer utilities — JSON formatter, JWT decoder, Base64 encoder, and more.
+
+Built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com).
+
+## Commands
+
+| Command | Action |
+| :------ | :----- |
+| `npm install` | Install dependencies |
+| `npm run dev` | Start dev server at `localhost:4321` |
+| `npm run build` | Build production site to `./dist/` |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format code with Prettier |
+
+## Deployment
+
+The site builds to static files in `dist/` and is deployed automatically on push to `main`:
+
+| Platform | URL | Trigger |
+| :------- | :-- | :------ |
+| **Vercel** | production URL | GitHub Actions + `vercel deploy --prebuilt` |
+| **Cloudflare Pages** | `tooliva.pages.dev` | GitHub Actions + `wrangler pages deploy` |
+| **GitHub Pages** | `oatmealyn-creator.github.io/tooliva` | GitHub Actions + `actions/deploy-pages` |
+
+### Manual deploy
 
 ```sh
-npm create astro@latest -- --template basics
+# Cloudflare Pages
+npm run build && npx wrangler pages deploy dist/ --project-name tooliva
+
+# Vercel
+npm run build && npx vercel deploy --prebuilt --prod
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Secrets required in GitHub
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
-
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Secret | Used by |
+| :----- | :------ |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare deploy |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare deploy |
+| `VERCEL_TOKEN` | Vercel deploy |
